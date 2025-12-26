@@ -2,8 +2,8 @@
 node_modules/
 src_unpacked/
 *.zip
-"Emmaville Website dashboard"/
-"website dashboard template"/
+Emmaville\ Website\ dashboard/
+website\ dashboard\ template/
 
 # Build output
 .next/
