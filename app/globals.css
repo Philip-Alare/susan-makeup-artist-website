@@ -59,9 +59,9 @@ a {
 .bg-gradient-to-b.from-\[\#1a1410\].to-\[\#0E0E0E\] {
   background: linear-gradient(180deg, #fffaf2 0%, #f3e8d9 100%) !important;
 }
-.text-white { color: #2c1a0a !important; }
-.text-white\/80 { color: rgba(44, 26, 10, 0.85) !important; }
-.text-white\/70 { color: rgba(44, 26, 10, 0.7) !important; }
-.text-white\/60 { color: rgba(44, 26, 10, 0.6) !important; }
-.text-white\/50 { color: rgba(44, 26, 10, 0.5) !important; }
-.text-white\/40 { color: rgba(44, 26, 10, 0.4) !important; }
+.text-white { color: #1f140b !important; }
+.text-white\/80 { color: rgba(31, 20, 11, 0.9) !important; }
+.text-white\/70 { color: rgba(31, 20, 11, 0.8) !important; }
+.text-white\/60 { color: rgba(31, 20, 11, 0.72) !important; }
+.text-white\/50 { color: rgba(31, 20, 11, 0.6) !important; }
+.text-white\/40 { color: rgba(31, 20, 11, 0.5) !important; }
