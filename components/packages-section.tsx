@@ -89,9 +89,9 @@ export default function PackagesSection() {
                   </h3>
                   <div className="mt-3 flex items-baseline gap-2">
                     {pkg.originalPrice && (
-                      <span className="text-xl text-[#5a4632]/60 line-through">{pkg.originalPrice}</span>
+                      <span className="text-xl text-[#b1781d]/55 line-through">{pkg.originalPrice}</span>
                     )}
-                    <span className="text-4xl text-[#c08b2f]">{pkg.price}</span>
+                    <span className="text-4xl text-[#b1781d]">{pkg.price}</span>
                   </div>
                 </div>
 
