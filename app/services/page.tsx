@@ -50,17 +50,17 @@ export default function ServicesPage() {
   return (
     <div className="bg-[#0E0E0E] text-white">
       <section className="relative flex h-[50vh] items-center justify-center overflow-hidden px-4">
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-[#0E0E0E]/70 to-[#0E0E0E]" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-black/55 to-black/75" />
         <ImageWithFallback
           src="/assets/IMG-20251227-WA0030.jpg"
           alt="Makeup Services"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
         <div className="relative z-20 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-display text-5xl md:text-6xl"
+            className="font-display text-5xl md:text-6xl drop-shadow-[0_3px_14px_rgba(0,0,0,0.55)]"
           >
             Our Services
           </motion.h1>
@@ -68,7 +68,7 @@ export default function ServicesPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-xl text-[#E6D1C3]"
+            className="mt-4 text-xl text-[#fdf7ec] drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]"
           >
             Flawless makeup for every occasion
           </motion.p>

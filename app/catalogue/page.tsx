@@ -106,7 +106,7 @@ export default function CataloguePage() {
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-display text-5xl md:text-6xl"
+            className="font-display text-5xl md:text-6xl drop-shadow-[0_3px_14px_rgba(0,0,0,0.45)]"
           >
             Our Work
           </motion.h1>
@@ -114,7 +114,7 @@ export default function CataloguePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-xl text-[#8c6235]"
+            className="mt-4 text-xl text-[#fdf7ec] drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]"
           >
             A showcase of flawless transformations and luxury beauty moments.
           </motion.p>

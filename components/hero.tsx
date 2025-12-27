@@ -52,10 +52,10 @@ export default function Hero() {
 
       <div className="relative z-20 flex h-full items-center justify-center">
         <div className="mx-auto max-w-4xl px-4 text-center">
-          <h1 className="text-5xl font-display tracking-wide text-[#c08b2f] sm:text-6xl md:text-7xl">
+          <h1 className="text-5xl font-display tracking-wide text-[#c08b2f] sm:text-6xl md:text-7xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
             {heroImages[currentSlide].title}
           </h1>
-          <p className="mt-4 text-xl uppercase tracking-wider text-[#5a4632] sm:text-2xl">
+          <p className="mt-4 text-xl uppercase tracking-wider text-[#fefaf4] sm:text-2xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
             {heroImages[currentSlide].subtitle}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
