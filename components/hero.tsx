@@ -46,7 +46,7 @@ export default function Hero() {
           }`}
         >
           <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-[#f8f1e3]/25 to-[#f3e8d9]/35" />
-          <img src={image.url} alt={image.title} className="h-full w-full object-cover" />
+          <img src={image.url} alt={image.title} className="h-full w-full object-cover object-top" />
         </div>
       ))}
 

@@ -62,6 +62,27 @@ import ImageWithFallback from "../../components/image-with-fallback"
       title: "Glamour Session",
       description: "Professional glam makeup.",
     },
+    {
+      id: 9,
+      image: "/assets/VID-20251227-WA0037.mp4",
+      category: "glam",
+      title: "Bridal Motion",
+      description: "Behind-the-scenes bridal glam in motion.",
+    },
+    {
+      id: 10,
+      image: "/assets/VID-20251227-WA0042.mp4",
+      category: "birthday",
+      title: "Birthday Glam BTS",
+      description: "Birthday transformation captured on video.",
+    },
+    {
+      id: 11,
+      image: "/assets/VID-20251227-WA0045.mp4",
+      category: "editorial",
+      title: "Editorial Flow",
+      description: "Editorial look with cinematic movement.",
+    },
   ]
 
 const categories = [
@@ -133,11 +154,23 @@ export default function CataloguePage() {
                 className="group relative aspect-square cursor-pointer overflow-hidden border border-[#C9A24D]/20 bg-[#0E0E0E]"
                 onClick={() => setSelectedImage(index)}
               >
-                <ImageWithFallback
-                  src={item.image}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+                {typeof item.image === "string" && item.image.endsWith(".mp4") ? (
+                  <video
+                    src={item.image}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <ImageWithFallback
+                    src={item.image}
+                    alt={item.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                )}
+
                 <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[#0E0E0E] via-[#0E0E0E]/50 to-transparent p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <span className="mb-2 text-xs uppercase tracking-wider text-[#C9A24D]">{item.category}</span>
                   <h3 className="text-xl">{item.title}</h3>
@@ -180,11 +213,23 @@ export default function CataloguePage() {
           </button>
 
           <div className="relative max-h-[90vh] max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <ImageWithFallback
-              src={filteredItems[selectedImage].image}
-              alt={filteredItems[selectedImage].title}
-              className="h-full w-full object-contain"
-            />
+            {typeof filteredItems[selectedImage].image === "string" && filteredItems[selectedImage].image.endsWith(".mp4") ? (
+              <video
+                src={filteredItems[selectedImage].image}
+                className="h-full w-full object-contain"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+              />
+            ) : (
+              <ImageWithFallback
+                src={filteredItems[selectedImage].image as string}
+                alt={filteredItems[selectedImage].title}
+                className="h-full w-full object-contain"
+              />
+            )}
 
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
               <span className="block text-sm uppercase tracking-wider text-[#C9A24D]">
