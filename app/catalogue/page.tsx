@@ -5,72 +5,64 @@ import { motion } from "motion/react"
 import { X } from "lucide-react"
 import ImageWithFallback from "../../components/image-with-fallback"
 
-const portfolioItems = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1762201732755-b59e912de5d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBicmlkYWwlMjBtYWtldXAlMjBnbGFtfGVufDF8fHx8MTc2Njc3OTE2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "bridal",
-    title: "Bridal Elegance",
-    description: "Flawless bridal glam with luxury finish.",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1766193232249-282e7754b1c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbGFtb3JvdXMlMjBiaXJ0aGRheSUyMHBob3Rvc2hvb3R8ZW58MXx8fHwxNzY2Nzc5NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "birthday",
-    title: "Birthday Celebration",
-    description: "Glamorous birthday photoshoot package.",
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1617113370852-2371f361f9fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBtYWtldXAlMjBhcnRpc3Q%3D&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "glam",
-    title: "Editorial Glam",
-    description: "High-fashion editorial makeup.",
-  },
-  {
-    id: 4,
-    image:
-      "https://images.unsplash.com/photo-1762201732755-b59e912de5d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBicmlkYWwlMjBtYWtldXAlMjBnbGFtfGVufDF8fHx8MTc2Njc3OTE2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "bridal",
-    title: "Classic Bridal",
-    description: "Timeless bridal beauty.",
-  },
-  {
-    id: 5,
-    image:
-      "https://images.unsplash.com/photo-1766193232249-282e7754b1c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbGFtb3JvdXMlMjBiaXJ0aGRheSUyMHBob3Rvc2hvb3R8ZW58MXx8fHwxNzY2Nzc5NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "birthday",
-    title: "Birthday Glam",
-    description: "Stunning birthday transformation.",
-  },
-  {
-    id: 6,
-    image:
-      "https://images.unsplash.com/photo-1621691553102-66d4ecdb1be2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWtldXAlMjBhcnRpc3QlMjBiZWF1dHl8ZW58MXx8fHwxNzY2Nzc5NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "glam",
-    title: "Event Glam",
-    description: "Red carpet ready.",
-  },
-  {
-    id: 7,
-    image:
-      "https://images.unsplash.com/photo-1648922798217-f5d339cb7aa6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZGl0b3JpYWwlMjBtYWtldXAlMjBiZWF1dHl8ZW58MXx8fHwxNzY2Nzc5NjE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "editorial",
-    title: "Magazine Editorial",
-    description: "High-fashion editorial look.",
-  },
-  {
-    id: 8,
-    image:
-      "https://images.unsplash.com/photo-1600637070413-0798fafbb6c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBtYWtldXAlMjBicnVzaGVzfGVufDF8fHx8MTc2NjcwOTk3MHww&ixlib=rb-4.1.0&q=80&w=1080",
-    category: "glam",
-    title: "Glamour Session",
-    description: "Professional glam makeup.",
-  },
-]
+  const portfolioItems = [
+    {
+      id: 1,
+      image: "/assets/IMG-20251227-WA0030.jpg",
+      category: "bridal",
+      title: "Bridal Elegance",
+      description: "Flawless bridal glam with luxury finish.",
+    },
+    {
+      id: 2,
+      image: "/assets/IMG-20251227-WA0032.jpg",
+      category: "birthday",
+      title: "Birthday Celebration",
+      description: "Glamorous birthday photoshoot package.",
+    },
+    {
+      id: 3,
+      image: "/assets/IMG-20251227-WA0028.jpg",
+      category: "glam",
+      title: "Editorial Glam",
+      description: "High-fashion editorial makeup.",
+    },
+    {
+      id: 4,
+      image: "/assets/IMG-20251227-WA0036.jpg",
+      category: "bridal",
+      title: "Classic Bridal",
+      description: "Timeless bridal beauty.",
+    },
+    {
+      id: 5,
+      image: "/assets/IMG-20251227-WA0034.jpg",
+      category: "birthday",
+      title: "Birthday Glam",
+      description: "Stunning birthday transformation.",
+    },
+    {
+      id: 6,
+      image: "/assets/IMG-20251227-WA0026.jpg",
+      category: "glam",
+      title: "Event Glam",
+      description: "Red carpet ready.",
+    },
+    {
+      id: 7,
+      image: "/assets/IMG-20251227-WA0020.jpg",
+      category: "editorial",
+      title: "Magazine Editorial",
+      description: "High-fashion editorial look.",
+    },
+    {
+      id: 8,
+      image: "/assets/IMG-20251227-WA0017.jpg",
+      category: "glam",
+      title: "Glamour Session",
+      description: "Professional glam makeup.",
+    },
+  ]
 
 const categories = [
   { id: "all", name: "All Work" },

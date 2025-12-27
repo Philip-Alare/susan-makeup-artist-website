@@ -5,7 +5,7 @@ export default function AboutSection() {
         <div className="relative">
           <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-lg bg-[#C9A24D]/20" />
           <img
-            src="https://images.unsplash.com/photo-1617113370852-2371f361f9fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBtYWtldXAlMjBhcnRpc3QlMjB3b3JraW5nfGVufDF8fHx8MTc2Njc3ODcyOXww&ixlib=rb-4.1.0&q=80&w=1080"
+            src="/assets/IMG-20251227-WA0014.jpg"
             alt="Susan Eworo - Makeup Artist"
             className="relative h-[500px] w-full rounded-lg object-cover shadow-2xl"
           />

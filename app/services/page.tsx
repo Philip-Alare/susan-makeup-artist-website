@@ -12,8 +12,7 @@ const makeupServices = [
     description:
       "The ultimate bridal makeup experience to make you look and feel flawless on your wedding day. Includes a trial session, professional application, and a long-lasting finish.",
     features: ["Bridal trial session", "Long-lasting formula", "Custom color matching", "Touch-up kit included"],
-    image:
-      "https://images.unsplash.com/photo-1762201732755-b59e912de5d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBicmlkYWwlMjBtYWtldXAlMjBnbGFtfGVufDF8fHx8MTc2Njc3OTE2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/assets/IMG-20251227-WA0036.jpg",
   },
   {
     icon: <Sparkles size={40} />,
@@ -21,8 +20,7 @@ const makeupServices = [
     description:
       "Celebrate your special day in style with a complete glam transformation. Professional makeup and hair styling for birthday photoshoots and celebrations.",
     features: ["Full glam makeup", "Professional hair installation", "Photoshoot ready", "Birthday shoot package available"],
-    image:
-      "https://images.unsplash.com/photo-1766193232249-282e7754b1c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbGFtb3JvdXMlMjBiaXJ0aGRheSUyMHBob3Rvc2hvb3R8ZW58MXx8fHwxNzY2Nzc5NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/assets/IMG-20251227-WA0034.jpg",
   },
   {
     icon: <Camera size={40} />,
@@ -30,8 +28,7 @@ const makeupServices = [
     description:
       "Look camera-ready for any special event or occasion. Professional makeup application designed to photograph beautifully and last all day.",
     features: ["High-definition makeup", "Camera-ready finish", "All-day wear", "Special event styling"],
-    image:
-      "https://images.unsplash.com/photo-1621691553102-66d4ecdb1be2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWtldXAlMjBhcnRpc3QlMjBiZWF1dHl8ZW58MXx8fHwxNzY2Nzc5NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/assets/IMG-20251227-WA0026.jpg",
   },
   {
     icon: <Palette size={40} />,
@@ -39,8 +36,7 @@ const makeupServices = [
     description:
       "High-fashion editorial makeup for photoshoots, magazine features, and creative projects. Bold, artistic looks tailored to your vision.",
     features: ["Editorial styling", "Creative concepts", "Professional collaboration", "Portfolio ready"],
-    image:
-      "https://images.unsplash.com/photo-1648922798217-f5d339cb7aa6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZGl0b3JpYWwlMjBtYWtldXAlMjBiZWF1dHl8ZW58MXx8fHwxNzY2Nzc5NjE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/assets/IMG-20251227-WA0020.jpg",
   },
 ]
 
@@ -56,7 +52,7 @@ export default function ServicesPage() {
       <section className="relative flex h-[50vh] items-center justify-center overflow-hidden px-4">
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-[#0E0E0E]/70 to-[#0E0E0E]" />
         <ImageWithFallback
-          src="https://images.unsplash.com/photo-1600637070413-0798fafbb6c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBtYWtldXAlMjBicnVzaGVzfGVufDF8fHx8MTc2NjcwOTk3MHww&ixlib=rb-4.1.0&q=80&w=1080"
+          src="/assets/IMG-20251227-WA0030.jpg"
           alt="Makeup Services"
           className="absolute inset-0 h-full w-full object-cover"
         />

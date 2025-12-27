@@ -6,17 +6,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const heroImages = [
   {
-    url: "https://images.unsplash.com/photo-1736849816780-6ca0730061a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBicmlkYWwlMjBtYWtldXAlMjBhcnRpc3R8ZW58MXx8fHwxNzY2Nzc4NzI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+    url: "/assets/IMG-20251227-WA0030.jpg",
     title: "Luxury Bridal & Glam Makeup Artist",
     subtitle: "UK & Nigeria | Travel Available",
   },
   {
-    url: "https://images.unsplash.com/photo-1763625640135-9ed6b1e5a10f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbGFtb3JvdXMlMjBiaXJ0aGRheSUyMG1ha2V1cHxlbnwxfHx8fDE3NjY3Nzg3Mjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    url: "/assets/IMG-20251227-WA0032.jpg",
     title: "Celebrate Your Day in Style",
     subtitle: "Exclusive Birthday Glam Packages",
   },
   {
-    url: "https://images.unsplash.com/photo-1578518496391-99bc1530a2c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZGl0b3JpYWwlMjBtYWtldXAlMjBwaG90b3Nob290fGVufDF8fHx8MTc2Njc3ODcyOXww&ixlib=rb-4.1.0&q=80&w=1080",
+    url: "/assets/IMG-20251227-WA0028.jpg",
     title: "Editorial Perfection",
     subtitle: "Your Moment to Shine",
   },
