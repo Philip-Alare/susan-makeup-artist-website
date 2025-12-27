@@ -45,7 +45,7 @@ export default function Hero() {
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-[#f8f1e3]/25 to-[#f3e8d9]/35" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-black/38 to-black/45" />
           <img
             src={image.url}
             alt={image.title}
@@ -57,7 +57,7 @@ export default function Hero() {
 
       <div className="relative z-20 flex h-full items-center justify-center">
         <div className="mx-auto max-w-4xl px-4 text-center">
-          <h1 className="text-5xl font-display tracking-wide text-[#c08b2f] sm:text-6xl md:text-7xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]">
+          <h1 className="text-5xl font-display tracking-wide text-[#d8b86a] sm:text-6xl md:text-7xl drop-shadow-[0_3px_20px_rgba(0,0,0,0.6)]">
             {heroImages[currentSlide].title}
           </h1>
           <p className="mt-4 text-xl uppercase tracking-wider text-[#fefaf4] sm:text-2xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
