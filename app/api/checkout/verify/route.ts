@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import Stripe from "stripe"
 
-import { sql } from "../../../../../lib/db"
+import { sql } from "../../../../lib/db"
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY
 
