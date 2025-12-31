@@ -3,7 +3,7 @@
 
 export const dynamic = "force-dynamic"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
@@ -17,7 +17,7 @@ type Booking = {
   status: string
 }
 
-export default function BookingSuccessPage() {
+function BookingSuccessInner() {
   const params = useSearchParams()
   const sessionId = params.get("session_id")
   const [loading, setLoading] = useState(true)
@@ -108,5 +108,13 @@ export default function BookingSuccessPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function BookingSuccessPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-[#6b4a2d]">Loading confirmation...</div>}>
+      <BookingSuccessInner />
+    </Suspense>
   )
 }

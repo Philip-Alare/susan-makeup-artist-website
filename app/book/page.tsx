@@ -3,9 +3,9 @@
 
 export const dynamic = "force-dynamic"
 
-import { useMemo, useState } from "react"
-import { useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { Suspense, useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 
 import { packages, type PackageData } from "../../data/packages"
 
@@ -14,7 +14,7 @@ type PayType = "deposit" | "full"
 const ukCities = ["London", "Manchester", "Birmingham", "Leeds", "Sheffield", "Bradford"]
 const ngCities = ["Lagos"]
 
-export default function BookPage() {
+function BookingPageInner() {
   const params = useSearchParams()
   const preselect = params.get("package")
   const [selected, setSelected] = useState<string | null>(preselect)
@@ -119,11 +119,14 @@ export default function BookPage() {
                       minimumFractionDigits: pkg.currency === "NGN" ? 0 : 2,
                     }).format(pkg.price)}
                   </p>
-                  <p className="text-xs text-[#846134]">Deposit: {new Intl.NumberFormat("en-GB", {
-                    style: "currency",
-                    currency: pkg.currency,
-                    minimumFractionDigits: pkg.currency === "NGN" ? 0 : 2,
-                  }).format(pkg.deposit)}</p>
+                  <p className="text-xs text-[#846134]">
+                    Deposit:{" "}
+                    {new Intl.NumberFormat("en-GB", {
+                      style: "currency",
+                      currency: pkg.currency,
+                      minimumFractionDigits: pkg.currency === "NGN" ? 0 : 2,
+                    }).format(pkg.deposit)}
+                  </p>
                 </button>
               ))}
             </div>
@@ -296,5 +299,13 @@ export default function BookPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-[#6b4a2d]">Loading booking form...</div>}>
+      <BookingPageInner />
+    </Suspense>
   )
 }
