@@ -37,6 +37,7 @@ const defaultSlides: Slide[] = [
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [slides, setSlides] = useState<Slide[]>(defaultSlides)
+  const eyebrow = "Luxury Makeup"
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentSlide((prev) => (prev + 1) % slides.length), 5000)
@@ -69,10 +70,11 @@ export default function Hero() {
 
       <div className="relative z-20 flex h-full items-center justify-center">
         <div className="mx-auto max-w-4xl px-4 text-center">
-          <h1 className="text-5xl font-display tracking-wide text-[#d8b86a] sm:text-6xl md:text-7xl drop-shadow-[0_3px_20px_rgba(0,0,0,0.6)]">
+          <p className="mb-3 text-sm uppercase tracking-[0.2em] text-[#C9A24D]">{eyebrow}</p>
+          <h1 className="text-5xl font-display tracking-wide text-white sm:text-6xl md:text-7xl drop-shadow-[0_3px_20px_rgba(0,0,0,0.6)]">
             {slides[currentSlide]?.title}
           </h1>
-          <p className="mt-4 text-xl uppercase tracking-wider text-[#fefaf4] sm:text-2xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
+          <p className="mt-4 text-xl tracking-wide text-[#fefaf4] sm:text-2xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
             {slides[currentSlide]?.subtitle}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -84,7 +86,7 @@ export default function Hero() {
             </Link>
             <Link
               href={slides[currentSlide]?.secondaryHref || "/packages"}
-              className="rounded border-2 border-[#C9A24D] px-8 py-4 text-sm font-semibold uppercase tracking-wider text-[#c08b2f] transition-transform hover:scale-105 hover:bg-[#C9A24D] hover:text-[#1c1208]"
+              className="rounded border-2 border-[#C9A24D] px-8 py-4 text-sm font-semibold uppercase tracking-wider text-[#C9A24D] transition-transform hover:scale-105 hover:bg-[#C9A24D] hover:text-[#1c1208]"
             >
               {slides[currentSlide]?.secondaryLabel || "View Packages"}
             </Link>
