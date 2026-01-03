@@ -1,12 +1,34 @@
+'use client'
+
 import Link from "next/link"
 import { Check } from "lucide-react"
 
 import { formatDeposit, formatPrice, packages } from "../data/packages"
+import { useEffect, useState } from "react"
+import { getSection } from "@/lib/api"
 
-const availabilityText =
+const defaultAvailability =
   "Serving London, Manchester, Birmingham, Leeds, Sheffield, and Bradford. Available to travel worldwide (fees may apply)."
 
 export default function PackagesSection() {
+  const [availabilityText, setAvailabilityText] = useState(defaultAvailability)
+  const [notes, setNotes] = useState<string[]>([])
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const data = await getSection("packages")
+        const list = Array.isArray(data?.packages) ? data.packages : []
+        const avail = list[0]?.availability || list[1]?.availability || list[2]?.availability
+        if (avail) setAvailabilityText(avail)
+        const noteList = list.map((p: any) => p.note).filter(Boolean)
+        if (noteList.length) setNotes(noteList)
+      } catch {
+        /* keep defaults */
+      }
+    })()
+  }, [])
+
   return (
     <section className="bg-[#fffaf2] px-4 py-20" id="packages">
       <div className="mx-auto max-w-7xl">
@@ -82,6 +104,14 @@ export default function PackagesSection() {
             <span className="text-[#C9A24D]">No refunds.</span> Travel fees may apply. Available to travel to any
             country.
           </p>
+          <p className="mt-3 text-[#7a5328]">{availabilityText}</p>
+          {!!notes.length && (
+            <ul className="mt-2 text-[#7a5328]/90">
+              {notes.slice(0, 3).map((n) => (
+                <li key={n}>• {n}</li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>

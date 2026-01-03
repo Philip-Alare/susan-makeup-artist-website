@@ -1,7 +1,11 @@
+'use client'
+
 import Link from "next/link"
 import { Camera, GraduationCap, Heart, Sparkles } from "lucide-react"
+import { useEffect, useState } from "react"
+import { getSection } from "@/lib/api"
 
-const services = [
+const defaultServices = [
   {
     icon: Heart,
     title: "Bridal Glam",
@@ -33,6 +37,33 @@ const services = [
 ]
 
 export default function ServicesSection() {
+  const [services, setServices] = useState(defaultServices)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const data = await getSection("services")
+        const list = Array.isArray(data?.services) ? data.services : []
+        if (list.length) {
+          const mapped = list.map((s: any) => ({
+            icon:
+              /bridal/i.test(s.title) ? Heart :
+              /birthday/i.test(s.title) ? Sparkles :
+              /editorial|photoshoot/i.test(s.title) ? Camera :
+              /training/i.test(s.title) ? GraduationCap :
+              Sparkles,
+            title: s.title,
+            description: s.description,
+            highlights: s.features || s.deliverables || [],
+          }))
+          setServices(mapped)
+        }
+      } catch {
+        /* keep defaults */
+      }
+    })()
+  }, [])
+
   return (
     <section className="bg-gradient-to-b from-[#fffaf2] via-[#f5ecdc] to-[#f3e8d9] px-4 py-20">
       <div className="mx-auto max-w-7xl">

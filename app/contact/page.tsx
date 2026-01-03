@@ -2,8 +2,59 @@
 
 import { motion } from "motion/react"
 import { Clock, Instagram, MapPin, Phone } from "lucide-react"
+import { useEffect, useState } from "react"
+import { getSection } from "@/lib/api"
 
 export default function ContactPage() {
+  type ContactData = {
+    phone?: string
+    whatsapp?: string
+    whatsappLink?: string
+    email?: string
+    social?: { instagram?: string; facebook?: string }
+    ctaLabel?: string
+    ctaLink?: string
+    address?: { lines?: string[] }
+    travelNote?: string
+  }
+
+  const defaultContact: ContactData = {
+    phone: "+44 7523 992614",
+    whatsapp: "+44 7523 992614",
+    whatsappLink: "https://wa.me/447523992614",
+    email: "beautyhomebysuzain@gmail.com",
+    social: { instagram: "https://instagram.com/beautyhomebysuzain", facebook: "" },
+    ctaLabel: "Book Appointment",
+    ctaLink: "/book",
+    address: { lines: ["London & across the UK"] },
+    travelNote: "Available to travel to any country.",
+  }
+
+  const [contact, setContact] = useState<ContactData>(defaultContact)
+
+  useEffect(() => {
+    let mounted = true
+    getSection("contact")
+      .then((data) => {
+        if (mounted) setContact(data)
+      })
+      .catch(() => {})
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const whatsappLink = contact.whatsappLink || defaultContact.whatsappLink!
+  const whatsappText = contact.whatsapp || defaultContact.whatsapp!
+  const phoneText = contact.phone || defaultContact.phone!
+  const instagramUrl = contact.social?.instagram || defaultContact.social?.instagram!
+  const instagramHandle =
+    instagramUrl
+      ?.replace(/https?:\/\/(www\.)?instagram\.com\//, "")
+      .replace(/\/$/, "") || "Instagram"
+  const addressLines = contact.address?.lines && contact.address.lines.length > 0 ? contact.address.lines : defaultContact.address!.lines!
+  const travelNote = contact.travelNote || defaultContact.travelNote!
+
   return (
     <div className="bg-[#0E0E0E] text-white">
       <section className="bg-gradient-to-b from-[#0E0E0E] to-[#1a1410] px-4 py-20">
@@ -31,7 +82,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-5xl">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <motion.a
-              href="https://wa.me/447523992614"
+              href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}
@@ -47,14 +98,14 @@ export default function ContactPage() {
                 <div className="flex-1">
                   <h3 className="text-xl uppercase tracking-wider">WhatsApp Booking</h3>
                   <p className="mt-2 text-white/60">Book directly via WhatsApp for instant confirmation.</p>
-                  <p className="mt-3 text-lg text-[#C9A24D]">+44 7523 992614</p>
+                  <p className="mt-3 text-lg text-[#C9A24D]">{whatsappText}</p>
                   <p className="mt-2 text-sm text-white/40">Tap to chat now.</p>
                 </div>
               </div>
             </motion.a>
 
             <motion.a
-              href="https://instagram.com/beautyhomebysuzain"
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}
@@ -70,7 +121,7 @@ export default function ContactPage() {
                 <div className="flex-1">
                   <h3 className="text-xl uppercase tracking-wider">Instagram DM</h3>
                   <p className="mt-2 text-white/60">Send us a direct message on Instagram.</p>
-                  <p className="mt-3 text-lg text-[#C9A24D]">@beautyhomebysuzain</p>
+                  <p className="mt-3 text-lg text-[#C9A24D]">@{instagramHandle}</p>
                   <p className="mt-2 text-sm text-white/40">Follow and message us.</p>
                 </div>
               </div>
@@ -85,13 +136,10 @@ export default function ContactPage() {
                 <div>
                   <h4 className="text-lg uppercase tracking-wider">Locations</h4>
                   <div className="mt-3 space-y-2 text-white/70">
-                    <p>London</p>
-                    <p>Manchester</p>
-                    <p>Birmingham</p>
-                    <p>Leeds</p>
-                    <p>Sheffield</p>
-                    <p>Bradford</p>
-                    <p className="mt-3 text-[#C9A24D]">Available to travel to any country.</p>
+                    {addressLines.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                    <p className="mt-3 text-[#C9A24D]">{travelNote}</p>
                   </div>
                 </div>
               </div>
@@ -159,13 +207,13 @@ export default function ContactPage() {
 
           <div className="mt-8 flex flex-col items-center justify-center gap-6 sm:flex-row">
             <a
-              href="https://instagram.com/beautyhomebysuzain"
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 text-[#C9A24D] transition-colors hover:text-[#E6D1C3]"
             >
               <Instagram size={32} />
-              <span className="text-lg">@beautyhomebysuzain</span>
+              <span className="text-lg">@{instagramHandle}</span>
             </a>
           </div>
 
@@ -173,15 +221,15 @@ export default function ContactPage() {
             <p className="text-white/60">Have questions? Need more information about our services?</p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
-              href="https://wa.me/447523992614"
+              href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded bg-[#C9A24D] px-8 py-4 text-sm font-semibold uppercase tracking-wider text-[#0E0E0E] transition-colors hover:bg-[#E6D1C3]"
             >
-              WhatsApp: +44 7523 992614
+              WhatsApp: {whatsappText}
             </a>
               <a
-                href="https://instagram.com/beautyhomebysuzain"
+                href={instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded border-2 border-[#C9A24D] px-8 py-4 text-sm font-semibold uppercase tracking-wider text-[#C9A24D] transition-colors hover:bg-[#C9A24D] hover:text-[#0E0E0E]"
@@ -201,17 +249,17 @@ export default function ContactPage() {
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
               <div>
                 <h4 className="text-xl text-white">United Kingdom</h4>
-                <p className="text-white/60">London · Manchester · Birmingham</p>
-                <p className="text-white/60">Leeds · Sheffield · Bradford</p>
-                <p className="mt-2 text-sm text-white/50">Full coverage across these cities.</p>
+                {addressLines.map((line) => (
+                  <p key={line} className="text-white/60">{line}</p>
+                ))}
               </div>
               <div>
                 <h4 className="text-xl text-white">Worldwide Travel</h4>
-                <p className="text-white/60">Available to travel to any country.</p>
+                <p className="text-white/60">{travelNote}</p>
                 <p className="mt-2 text-sm text-white/50">Get in touch for bespoke bookings.</p>
               </div>
             </div>
-            <p className="mt-8 text-[#C9A24D]">Travel available to any location globally.</p>
+            <p className="mt-8 text-[#C9A24D]">{travelNote}</p>
           </div>
         </div>
       </section>
