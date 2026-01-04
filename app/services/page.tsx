@@ -81,7 +81,7 @@ export default function ServicesPage() {
           alt="Makeup Services"
           className="absolute inset-0 h-full w-full"
           imageClassName="object-cover"
-          imageStyle={{ objectPosition: "center 60%" }}
+          imageStyle={{ objectPosition: "center 20%" }}
         />
         <div className="relative z-20 text-center">
           <motion.h1
