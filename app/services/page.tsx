@@ -48,12 +48,14 @@ const addOns = [
 export default function ServicesPage() {
   const [hero, setHero] = useState(defaultHero)
   const [services, setServices] = useState(defaultServices)
+  const [heroImage, setHeroImage] = useState<string>("/assets/IMG-20251227-WA0032.jpg")
 
   useEffect(() => {
     ;(async () => {
       try {
         const data = await getSection("services")
         if (data?.hero) setHero({ title: data.hero.title || defaultHero.title, subtitle: data.hero.subtitle || defaultHero.subtitle })
+        if (data?.hero?.image) setHeroImage(data.hero.image)
         const list = Array.isArray(data?.services) ? data.services : []
         if (list.length) setServices(list)
       } catch {
@@ -75,7 +77,7 @@ export default function ServicesPage() {
       <section className="relative flex h-[70vh] items-center justify-center overflow-hidden px-4">
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/5 via-black/40 to-black/90" />
         <ImageWithFallback
-          src="/assets/IMG-20251227-WA0032.jpg"
+          src={heroImage}
           alt="Makeup Services"
           className="absolute inset-0 h-full w-full"
           imageClassName="object-cover"
@@ -118,7 +120,7 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className={`flex flex-col items-center gap-8 border border-[#C9A24D]/20 bg-[#0E0E0E] overflow-hidden ${
+                className={`flex flex-col items-center gap-8 bg-[#0E0E0E] overflow-hidden ${
                   index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
                 }`}
               >
