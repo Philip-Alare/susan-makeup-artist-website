@@ -6,11 +6,14 @@ import Image from "next/image"
 const ERROR_IMG_SRC =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Rya2Utd2lkdGg9IjMuNyI+PHJlY3QgeD0iMTYiIHk9IjE2IiB3aWR0aD0iNTYiIGhlaWdodD0iNTYiIHJ4PSI2Ii8+PHBhdGggZD0ibTE2IDU4IDE2LTE4IDMyIDMyIi8+PGNpcmNsZSBjeD0iNTMiIGN5PSIzNSIgcj0iNyIvPjwvc3ZnPgoK"
 
-type ImageWithFallbackProps = ImgHTMLAttributes<HTMLImageElement>
+type ImageWithFallbackProps = ImgHTMLAttributes<HTMLImageElement> & {
+  imageClassName?: string
+  imageStyle?: React.CSSProperties
+}
 
 export default function ImageWithFallback(props: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false)
-  const { src, alt, className, style, ...rest } = props
+  const { src, alt, className, imageClassName, imageStyle, style, ...rest } = props
 
   if (didError) {
     return (
@@ -20,7 +23,8 @@ export default function ImageWithFallback(props: ImageWithFallbackProps) {
             src={ERROR_IMG_SRC} 
             alt="Error loading" 
             fill
-            className="object-contain"
+            className={`object-contain ${imageClassName || ''}`}
+            style={imageStyle}
             {...rest as any} 
           />
         </div>
@@ -34,7 +38,8 @@ export default function ImageWithFallback(props: ImageWithFallbackProps) {
           src={src || ''}
           alt={alt || ''}
           fill
-          className="object-cover"
+          className={`object-cover ${imageClassName || ''}`}
+          style={imageStyle}
           onError={() => setDidError(true)}
           {...rest as any}
         />

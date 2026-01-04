@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 import Stripe from "stripe"
+import { put } from "@vercel/blob"
 
 import { sql } from "../../../../lib/db"
 import { packages } from "../../../../data/packages"

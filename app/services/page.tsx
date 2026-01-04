@@ -48,14 +48,15 @@ const addOns = [
 
 export default function ServicesPage() {
   return (
-    <div className="bg-[#0E0E0E] text-white">
+    <div className="bg-[#fdf7ec] text-[#1c1208]">
       <section className="relative flex h-[50vh] items-center justify-center overflow-hidden px-4">
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/15 via-black/55 to-black/80" />
         <ImageWithFallback
           src="/assets/IMG-20251227-WA0028.jpg"
           alt="Makeup Services"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: "center 35%" }}
+          className="absolute inset-0 h-full w-full"
+          imageClassName="object-cover"
+          imageStyle={{ objectPosition: "center 35%" }}
         />
         <div className="relative z-20 text-center">
           <motion.h1
@@ -76,12 +77,12 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-b from-[#0E0E0E] to-[#1a1410] px-4 py-20">
+      <section className="bg-[#fdf7ec] px-4 py-20">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 text-center">
-            <h2 className="font-display text-4xl text-white md:text-5xl">Makeup Services</h2>
+            <h2 className="font-display text-4xl text-[#1c1208] md:text-5xl">Makeup Services</h2>
             <div className="mx-auto mb-6 mt-4 h-1 w-24 bg-[#C9A24D]" />
-            <p className="mx-auto max-w-3xl text-lg text-white/60">
+            <p className="mx-auto max-w-3xl text-lg text-[#1c1208]/60">
               Professional makeup services tailored to enhance your natural beauty and create unforgettable looks.
             </p>
           </div>
@@ -102,7 +103,8 @@ export default function ServicesPage() {
                   <ImageWithFallback
                     src={service.image}
                     alt={service.title}
-                    className="h-full w-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                    className="h-full w-full"
+                    imageClassName="object-cover object-top transition-transform duration-500 hover:scale-105"
                   />
                 </div>
 
@@ -133,10 +135,10 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-[#1a1410] px-4 py-16">
+      <section className="bg-[#fdf7ec] px-4 py-16">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <h3 className="font-display text-3xl text-white">Additional Services</h3>
+            <h3 className="font-display text-3xl text-[#1c1208]">Additional Services</h3>
             <div className="mx-auto mt-3 h-1 w-16 bg-[#C9A24D]" />
           </div>
 
@@ -148,11 +150,13 @@ export default function ServicesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="border border-[#C9A24D]/20 bg-[#0E0E0E] p-6 transition-all hover:border-[#C9A24D]"
+                className={`bg-white p-6 transition-all ${
+                  index === 1 ? "border border-[#C9A24D]" : "border border-transparent"
+                }`}
               >
                 <div className="mb-3 text-[#C9A24D]">{addOn.icon}</div>
-                <h4 className="text-lg text-white">{addOn.name}</h4>
-                <p className="mt-2 text-sm text-white/60">{addOn.description}</p>
+                <h4 className="text-lg text-[#1c1208]">{addOn.name}</h4>
+                <p className="mt-2 text-sm text-[#1c1208]/60">{addOn.description}</p>
               </motion.div>
             ))}
           </div>
