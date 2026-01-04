@@ -3,11 +3,13 @@
 import Link from "next/link"
 import { motion } from "motion/react"
 import { Camera, Crown, GraduationCap, Palette, Plus, Sparkles } from "lucide-react"
+import { useEffect, useState } from "react"
 import ImageWithFallback from "../../components/image-with-fallback"
+import { getSection } from "@/lib/api"
 
-const makeupServices = [
+const defaultHero = { title: "Our Services", subtitle: "Flawless makeup for every occasion" }
+const defaultServices = [
   {
-    icon: <Crown size={40} />,
     title: "Bridal Glam",
     description:
       "The ultimate bridal makeup experience to make you look and feel flawless on your wedding day. Includes a trial session, professional application, and a long-lasting finish.",
@@ -15,7 +17,6 @@ const makeupServices = [
     image: "/assets/IMG-20251227-WA0018.jpg",
   },
   {
-    icon: <Sparkles size={40} />,
     title: "Birthday Glam",
     description:
       "Celebrate your special day in style with a complete glam transformation. Professional makeup artistry for birthday photoshoots and celebrations.",
@@ -23,7 +24,6 @@ const makeupServices = [
     image: "/assets/IMG-20251227-WA0034.jpg",
   },
   {
-    icon: <Camera size={40} />,
     title: "Event Glam",
     description:
       "Look camera-ready for any special event or occasion. Professional makeup application designed to photograph beautifully and last all day.",
@@ -31,7 +31,6 @@ const makeupServices = [
     image: "/assets/IMG-20251227-WA0026.jpg",
   },
   {
-    icon: <Palette size={40} />,
     title: "Editorial / Photoshoot Glam",
     description:
       "High-fashion editorial makeup for photoshoots, magazine features, and creative projects. Bold, artistic looks tailored to your vision.",
@@ -47,32 +46,56 @@ const addOns = [
 ]
 
 export default function ServicesPage() {
+  const [hero, setHero] = useState(defaultHero)
+  const [services, setServices] = useState(defaultServices)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const data = await getSection("services")
+        if (data?.hero) setHero({ title: data.hero.title || defaultHero.title, subtitle: data.hero.subtitle || defaultHero.subtitle })
+        const list = Array.isArray(data?.services) ? data.services : []
+        if (list.length) setServices(list)
+      } catch {
+        /* fall back to defaults */
+      }
+    })()
+  }, [])
+
+  const iconFor = (title: string) => {
+    if (/bridal/i.test(title)) return <Crown size={40} />
+    if (/birthday/i.test(title)) return <Sparkles size={40} />
+    if (/event/i.test(title)) return <Camera size={40} />
+    if (/editorial|photoshoot/i.test(title)) return <Palette size={40} />
+    return <Sparkles size={40} />
+  }
+
   return (
     <div className="bg-[#fdf7ec] text-[#1c1208]">
-      <section className="relative flex h-[60vh] items-center justify-center overflow-hidden px-4">
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-black/40 to-black/80" />
+      <section className="relative flex h-[70vh] items-center justify-center overflow-hidden px-4">
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/5 via-black/40 to-black/90" />
         <ImageWithFallback
           src="/assets/IMG-20251227-WA0032.jpg"
           alt="Makeup Services"
           className="absolute inset-0 h-full w-full"
           imageClassName="object-cover"
-          imageStyle={{ objectPosition: "center 45%" }}
+          imageStyle={{ objectPosition: "center 60%" }}
         />
         <div className="relative z-20 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-display text-5xl md:text-6xl text-[#fdf7ec] drop-shadow-[0_3px_14px_rgba(0,0,0,0.55)]"
+            className="font-display text-6xl md:text-7xl text-[#fdf7ec] drop-shadow-[0_4px_18px_rgba(0,0,0,0.6)]"
           >
-            Our Services
+            {hero.title}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-xl text-[#fffaf4] drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]"
+            className="mt-3 text-lg sm:text-xl uppercase tracking-wider text-[#fffaf4] drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)]"
           >
-            Flawless makeup for every occasion
+            {hero.subtitle}
           </motion.p>
         </div>
       </section>
@@ -88,9 +111,9 @@ export default function ServicesPage() {
           </div>
 
           <div className="space-y-16">
-            {makeupServices.map((service, index) => (
+            {services.map((service, index) => (
               <motion.div
-                key={service.title}
+                key={service.title || index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -109,12 +132,12 @@ export default function ServicesPage() {
                 </div>
 
                 <div className="p-8 lg:w-1/2 lg:p-12">
-                  <div className="mb-4 text-[#C9A24D]">{service.icon}</div>
+                  <div className="mb-4 text-[#C9A24D]">{iconFor(service.title)}</div>
                   <h3 className="font-display text-3xl tracking-wider text-white">{service.title}</h3>
                   <p className="mt-4 text-white/70">{service.description}</p>
 
                   <div className="mt-6 space-y-3">
-                    {service.features.map((feature) => (
+                    {(Array.isArray(service.features) ? service.features : []).map((feature) => (
                       <div key={feature} className="flex items-center text-sm text-white/70">
                         <span className="mr-3 text-[#C9A24D]">&bull;</span>
                         <span>{feature}</span>
