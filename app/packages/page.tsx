@@ -4,7 +4,9 @@ import Link from "next/link"
 import { motion } from "motion/react"
 import { Camera, Check, Crown, Phone, Sparkles } from "lucide-react"
 
-import { formatDeposit, formatPrice, packages, type PackageData } from "../../data/packages"
+import { formatDeposit, formatPrice, packages, type PackageData, type Currency } from "../../data/packages"
+import { useEffect, useState } from "react"
+import { getSection } from "@/lib/api"
 
 function iconFor(pkg: PackageData) {
   if (pkg.id.includes("bridal")) return <Crown size={48} />
@@ -16,6 +18,38 @@ const availabilityText =
   "Serving London, Manchester, Birmingham, Leeds, Sheffield, and Bradford. Available to travel worldwide (fees may apply)."
 
 export default function PackagesPage() {
+  const [list, setList] = useState<PackageData[]>(packages)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const data = await getSection("packages")
+        const api = Array.isArray(data?.packages) ? data.packages : []
+        if (api.length) {
+          const mapped: PackageData[] = api.map((p: any, idx: number) => {
+            const m = String(p.price || "").match(/^([A-Z]{3})\s*([\d,]+(?:\.\d+)?)$/)
+            const currency = (m?.[1] as Currency) || "GBP"
+            const value = m?.[2] ? Number(String(m[2]).replace(/,/g, "")) : 0
+            return {
+              id: `${p.name?.toLowerCase().replace(/\s+/g, "-") || "pkg"}-${idx}`,
+              name: p.name || `Package ${idx + 1}`,
+              description: p.originalPrice || p.description || "",
+              currency,
+              price: value,
+              deposit: 0,
+              includes: Array.isArray(p.features) ? p.features : Array.isArray(p.deliverables) ? p.deliverables : [],
+              durationEstimate: p.durationEstimate || "",
+              availability: "BOTH",
+            }
+          })
+          setList(mapped)
+        }
+      } catch {
+        /* keep defaults */
+      }
+    })()
+  }, [])
+
   return (
     <div className="bg-[#0E0E0E] text-white">
       <section className="bg-gradient-to-b from-[#0E0E0E] to-[#1a1410] px-4 py-20">
@@ -42,7 +76,7 @@ export default function PackagesPage() {
 
       <section className="bg-[#1a1410] px-4 py-16">
         <div className="mx-auto max-w-7xl space-y-12">
-          {packages.map((pkg, index) => (
+          {list.map((pkg, index) => (
             <motion.div
               key={pkg.id}
               initial={{ opacity: 0, y: 30 }}
@@ -66,7 +100,9 @@ export default function PackagesPage() {
                     <h2 className="font-display text-4xl text-white">{pkg.name}</h2>
                     <div className="my-6">
                       <p className="text-5xl font-display text-[#E6D1C3]">{formatPrice(pkg)}</p>
-                      <p className="text-sm text-white/50">Deposit: {formatDeposit(pkg)} (non-refundable)</p>
+                      {pkg.deposit > 0 && (
+                        <p className="text-sm text-white/50">Deposit: {formatDeposit(pkg)} (non-refundable)</p>
+                      )}
                       <p className="text-xs text-white/40">Approx. duration: {pkg.durationEstimate}</p>
                     </div>
                     <p className="leading-relaxed text-white/70">{pkg.description}</p>

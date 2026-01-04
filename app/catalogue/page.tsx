@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { motion } from "motion/react"
 import { X } from "lucide-react"
 import ImageWithFallback from "../../components/image-with-fallback"
-import { withSite } from "@/lib/api"
+import { getSection, withSite } from "@/lib/api"
 
 type PortfolioItem = {
   id: number
@@ -300,7 +300,29 @@ const categories = [
 export default function CataloguePage() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [filter, setFilter] = useState<string>("all")
-  const [items] = useState<PortfolioItem[]>(portfolioItems)
+  const [items, setItems] = useState<PortfolioItem[]>(portfolioItems)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const data = await getSection("portfolio")
+        const apiItems = Array.isArray(data?.items) ? data.items : []
+        if (apiItems.length) {
+          const mapped: PortfolioItem[] = apiItems.map((i: any, idx: number) => ({
+            id: idx + 1,
+            media: withSite(i.media || ""),
+            category: i.category || "editorial",
+            title: i.title || "",
+            description: i.description || "",
+            alt: i.alt || i.title || "",
+          }))
+          setItems(mapped)
+        }
+      } catch {
+        /* keep defaults */
+      }
+    })()
+  }, [])
 
   const filteredItems = filter === "all" ? items : items.filter((item) => item.category === filter)
   const isVideo = (path: string) => path.endsWith(".mp4")
