@@ -6,9 +6,15 @@ export { COOKIE_NAME, COOKIE_SECRET };
 // Helper to get crypto key for HMAC signing
 async function getKey() {
   const enc = new TextEncoder();
-  return crypto.subtle.importKey(
+  const secret = String(COOKIE_SECRET); // Ensure it's a string
+  
+  if (!globalThis.crypto || !globalThis.crypto.subtle) {
+    throw new Error("Web Crypto API is not available in this environment");
+  }
+
+  return globalThis.crypto.subtle.importKey(
     "raw",
-    enc.encode(COOKIE_SECRET),
+    enc.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"]
