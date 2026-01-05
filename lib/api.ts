@@ -3,7 +3,7 @@ export const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN ||
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : undefined) ||
-  (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
+  (typeof window !== "undefined" ? window.location.origin : (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://susan-makeup-artist-website.vercel.app"));
 
 // When running on the client, use relative paths to avoid CORS issues and ensure we hit the same backend.
 // When running on the server, use the absolute URL.

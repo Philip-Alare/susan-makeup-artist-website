@@ -5,7 +5,7 @@ import { sql } from "../../../../lib/db"
 import { packages } from "../../../../data/packages"
 import { rateLimit } from "@/lib/rateLimit"
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "https://beautyhomebysuzain.com")
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "https://susan-makeup-artist-website.vercel.app")
 const BLOB_BUCKET = process.env.BLOB_BUCKET || process.env.NEXT_PUBLIC_BLOB_BUCKET;
 const BLOB_BASE_URL =
   process.env.BLOB_BASE_URL ||
