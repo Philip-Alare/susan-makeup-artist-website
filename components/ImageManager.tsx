@@ -17,6 +17,8 @@ function ImageManager({ onDelete }: ImageManagerProps) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const isVideo = (path: string) => path?.toLowerCase().endsWith(".mp4");
+
   // Load existing gallery items from website content (portfolio section)
   useEffect(() => {
     async function loadGallery() {
@@ -27,7 +29,7 @@ function ImageManager({ onDelete }: ImageManagerProps) {
         const mapped =
           data.items?.map((item: any, idx: number) => ({
             id: idx,
-            url: item.media,
+            url: withSite(item.media),
             name: item.title || `Image ${idx + 1}`,
             section: "Portfolio",
             category: item.category || "General",
@@ -124,11 +126,23 @@ function ImageManager({ onDelete }: ImageManagerProps) {
           {images.map((img) => (
             <Card key={img.id} className="group relative overflow-hidden">
               <div className="aspect-square bg-muted relative">
-                <ImageWithFallback
-                  src={img.url}
-                  alt={img.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                {isVideo(img.url) ? (
+                  <video
+                    src={img.url}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    loop
+                    onMouseOver={(e) => e.currentTarget.play()}
+                    onMouseOut={(e) => e.currentTarget.pause()}
+                  />
+                ) : (
+                  <ImageWithFallback
+                    src={img.url}
+                    alt={img.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <a
                     href={img.url}
