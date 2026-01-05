@@ -240,7 +240,9 @@ export async function getContent(section: string) {
   try {
     const url = await getBlobUrl(section);
     if (url) {
-      const res = await fetch(url, { cache: "no-store" });
+      // Add timestamp to bypass Vercel Blob edge cache
+      const t = Date.now();
+      const res = await fetch(`${url}?t=${t}`, { cache: "no-store" });
       if (res.ok) {
         return await res.json();
       }

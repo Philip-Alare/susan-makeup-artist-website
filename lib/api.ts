@@ -23,7 +23,8 @@ export function withSite(path: string) {
 }
 
 export async function getSection(section: string) {
-  const res = await fetch(`${BASE}/${section}`, { cache: "no-store" });
+  const t = Date.now();
+  const res = await fetch(`${BASE}/${section}?t=${t}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch section");
   return res.json();
 }
