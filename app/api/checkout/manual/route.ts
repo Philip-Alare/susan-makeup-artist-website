@@ -4,7 +4,6 @@ import { put, list } from "@vercel/blob"
 import { sql } from "../../../../lib/db"
 import { packages } from "../../../../data/packages"
 import { rateLimit } from "@/lib/rateLimit"
-import { sendBookingNotification } from "@/lib/email"
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "https://beautyhomebysuzain.com")
 const BLOB_BUCKET = process.env.BLOB_BUCKET || process.env.NEXT_PUBLIC_BLOB_BUCKET;
@@ -183,9 +182,6 @@ export async function POST(request: NextRequest) {
         allowOverwrite: true,
       })
     }
-
-    // Fire and forget email notification
-    sendBookingNotification(booking).catch(console.error)
 
     return NextResponse.json({ reference })
   } catch (error) {
