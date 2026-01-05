@@ -18,6 +18,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.beautyhomebysuzain.com"),
   title: "BeautyHomeBySuzain | Luxury Bridal & Glam Makeup",
   description:
     "Luxury bridal and glam makeup artist serving London, Manchester, Birmingham, Leeds, Sheffield, and Bradford — available to travel worldwide.",
