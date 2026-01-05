@@ -44,8 +44,13 @@ function BookingPageInner() {
           const m = !hasSplit ? String(p.price || "").match(/^([A-Z]{3})\s*([\d,]+(?:\.\d+)?)$/) : null
           const currency: Currency = hasSplit ? (p.currency as Currency) : ((m?.[1] as Currency) || "GBP")
           const value = hasSplit ? Number(p.price) : m?.[2] ? Number(String(m[2]).replace(/,/g, "")) : 0
+
+          // Try to find a matching default package by name to reuse its ID
+          const defaultPkg = packages.find(dp => dp.name === p.name)
+          const fallbackId = defaultPkg ? defaultPkg.id : `${String(p.name || "Package").toLowerCase().replace(/\s+/g, "-")}-${idx}`
+
           return {
-            id: typeof p.id === "string" && p.id ? p.id : `${String(p.name || "Package").toLowerCase().replace(/\s+/g, "-")}-${idx}`,
+            id: typeof p.id === "string" && p.id ? p.id : fallbackId,
             name: p.name || `Package ${idx + 1}`,
             description: p.description || p.originalPrice || "",
             currency,

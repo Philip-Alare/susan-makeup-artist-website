@@ -54,12 +54,18 @@ async function resolvePackages() {
     if (!res.ok) return defaults
     const data = await res.json()
     if (Array.isArray(data?.packages)) {
-      return data.packages.map((p: any, idx: number) => ({
-        ...p,
-        id: p.id || `${p.name.toLowerCase().replace(/\s+/g, "-")}-${idx}`,
-        price: Number(p.price),
-        deposit: Number(p.deposit),
-      }))
+      return data.packages.map((p: any, idx: number) => {
+        // Try to find a matching default package by name to reuse its ID
+        const defaultPkg = defaults.find(dp => dp.name === p.name)
+        const fallbackId = defaultPkg ? defaultPkg.id : `${p.name.toLowerCase().replace(/\s+/g, "-")}-${idx}`
+        
+        return {
+          ...p,
+          id: p.id || fallbackId,
+          price: Number(p.price),
+          deposit: Number(p.deposit),
+        }
+      })
     }
     return defaults
   } catch {
