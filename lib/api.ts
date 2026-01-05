@@ -5,8 +5,12 @@ export const SITE_ORIGIN =
   (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : undefined) ||
   (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
 
-export const BASE = `${SITE_ORIGIN}/api/content`;
-export const UPLOAD_BASE = `${SITE_ORIGIN}/api/upload`;
+// When running on the client, use relative paths to avoid CORS issues and ensure we hit the same backend.
+// When running on the server, use the absolute URL.
+const API_ORIGIN = typeof window !== "undefined" ? "" : SITE_ORIGIN;
+
+export const BASE = `${API_ORIGIN}/api/content`;
+export const UPLOAD_BASE = `${API_ORIGIN}/api/upload`;
 
 // Helper to prefix relative asset paths with the site origin
 export function withSite(path: string) {
