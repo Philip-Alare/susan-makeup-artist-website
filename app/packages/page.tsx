@@ -28,13 +28,13 @@ export default function PackagesPage() {
         if (api.length) {
           const mapped: PackageData[] = api.map((p: any, idx: number) => {
             const hasSplit = typeof p.currency === "string" && typeof p.price === "number"
-            const m = !hasSplit ? String(p.price || "").match(/^([A-Z]{3})\s*([\d,]+(?:\.\d+)?)$/) : null
-            const currency = hasSplit ? (p.currency as Currency) : ((m?.[1] as Currency) || "GBP")
-            const value = hasSplit ? Number(p.price) : m?.[2] ? Number(String(m[2]).replace(/,/g, "")) : 0
+            const m = !hasSplit ? String(p.price || "").match(/^([A-Z]{3}|[^\w\s])?\s*([\d,]+(?:\.\d+)?)$/) : null
+            const currency = hasSplit ? (p.currency as Currency) : "GBP"
+            const value = hasSplit ? Number(p.price) : m?.[2] ? Number(String(m[2]).replace(/,/g, "")) : Number(String(p.price || "").replace(/[^0-9.]/g, "")) || 0
 
             // Parse deposit which might be "GBP 50" or just number
-            const mDep = typeof p.deposit === "string" ? p.deposit.match(/^([A-Z]{3})?\s*([\d,]+(?:\.\d+)?)$/) : null
-            const depositVal = typeof p.deposit === "number" ? p.deposit : mDep ? Number(String(mDep[2]).replace(/,/g, "")) : Number(p.deposit) || 0
+            const mDep = typeof p.deposit === "string" ? p.deposit.match(/^([A-Z]{3}|[^\w\s])?\s*([\d,]+(?:\.\d+)?)$/) : null
+            const depositVal = typeof p.deposit === "number" ? p.deposit : mDep ? Number(String(mDep[2]).replace(/,/g, "")) : Number(String(p.deposit || "").replace(/[^0-9.]/g, "")) || 0
 
             return {
               id: typeof p.id === "string" && p.id ? p.id : `${p.name?.toLowerCase().replace(/\s+/g, "-") || "pkg"}-${idx}`,
