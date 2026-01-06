@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Check } from "lucide-react"
 
-import { formatDeposit, formatPrice, packages, type PackageData, type Currency } from "../data/packages"
+import { packages, type PackageData, type Currency } from "../data/packages"
 import { useEffect, useState } from "react"
 import { getSection } from "@/lib/api"
 
@@ -37,6 +37,8 @@ export default function PackagesSection() {
             currency,
             price: value,
             deposit: depositVal,
+            displayPrice: typeof p.price === "string" ? String(p.price).trim() : typeof currency === "string" ? `${currency}${value}` : String(value),
+            displayDeposit: typeof p.deposit === "string" ? String(p.deposit).trim() : typeof currency === "string" ? `${currency}${depositVal}` : String(depositVal),
             includes: Array.isArray(p.includes)
               ? p.includes
               : Array.isArray(p.features)
@@ -90,8 +92,8 @@ export default function PackagesSection() {
                 <div className="mb-6">
                   <h3 className="font-display text-2xl uppercase tracking-wide text-[#2c1a0a]">{pkg.name}</h3>
                   <div className="mt-3 flex flex-col gap-1">
-                    <span className="text-4xl text-[#b1781d]">{formatPrice(pkg)}</span>
-                    <span className="text-sm text-[#5a4632]">Deposit: {formatDeposit(pkg)} (non-refundable)</span>
+                    <span className="text-4xl text-[#b1781d]">{pkg.displayPrice}</span>
+                    <span className="text-sm text-[#5a4632]">Deposit: {pkg.displayDeposit} (non-refundable)</span>
                     <span className="text-xs text-[#5a4632]/80">Duration: {pkg.durationEstimate}</span>
                   </div>
                   <div className="mt-2 text-sm text-[#5a4632]">{pkg.description}</div>

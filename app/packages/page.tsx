@@ -4,7 +4,7 @@ import Link from "next/link"
 import { motion } from "motion/react"
 import { Camera, Check, Crown, Phone, Sparkles } from "lucide-react"
 
-import { formatDeposit, formatPrice, packages, type PackageData, type Currency } from "../../data/packages"
+import { packages, type PackageData, type Currency } from "../../data/packages"
 import { useEffect, useState } from "react"
 import { getSection } from "@/lib/api"
 
@@ -43,6 +43,8 @@ export default function PackagesPage() {
               currency,
               price: value,
               deposit: depositVal,
+              displayPrice: typeof p.price === "string" ? String(p.price).trim() : typeof currency === "string" ? `${currency}${value}` : String(value),
+              displayDeposit: typeof p.deposit === "string" ? String(p.deposit).trim() : typeof currency === "string" ? `${currency}${depositVal}` : String(depositVal),
               includes: Array.isArray(p.includes)
                 ? p.includes
                 : Array.isArray(p.features)
@@ -111,9 +113,9 @@ export default function PackagesPage() {
                     <div className="mb-6 text-[#C9A24D]">{iconFor(pkg)}</div>
                     <h2 className="font-display text-4xl text-white">{pkg.name}</h2>
                     <div className="my-6">
-                      <p className="text-5xl font-display text-[#E6D1C3]">{formatPrice(pkg)}</p>
+                      <p className="text-5xl font-display text-[#E6D1C3]">{pkg.displayPrice}</p>
                       {pkg.deposit > 0 && (
-                        <p className="text-sm text-white/50">Deposit: {formatDeposit(pkg)} (non-refundable)</p>
+                        <p className="text-sm text-white/50">Deposit: {pkg.displayDeposit} (non-refundable)</p>
                       )}
                       <p className="text-sm text-white/50 mt-1">Duration: {pkg.durationEstimate}</p>
                     </div>

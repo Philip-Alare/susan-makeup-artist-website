@@ -44,7 +44,9 @@ export default function AdminBookingsPage() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/admin/bookings${status ? `?status=${status}` : ""}`, {
+      const t = Date.now()
+      const res = await fetch(`/api/admin/bookings${status ? `?status=${status}&t=${t}` : `?t=${t}`}`, {
+        cache: "no-store",
         headers: { "x-admin-key": key },
       })
       const data = await res.json()
@@ -66,8 +68,10 @@ export default function AdminBookingsPage() {
     setBookings(prev => prev.map(b => b.reference === reference ? { ...b, status: newStatus } : b))
 
     try {
-      const res = await fetch('/api/admin/bookings', {
+      const t = Date.now()
+      const res = await fetch(`/api/admin/bookings?t=${t}`, {
         method: 'PATCH',
+        cache: "no-store",
         headers: {
           'Content-Type': 'application/json',
           'x-admin-key': password

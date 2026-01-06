@@ -25,7 +25,8 @@ export default function DashboardPage() {
     }
     async function checkSession() {
       try {
-        const res = await fetch("/api/auth/login", { method: "GET" });
+        const t = Date.now();
+        const res = await fetch(`/api/auth/login?t=${t}`, { method: "GET", cache: "no-store" });
         if (res.ok) {
           setChecked(true);
         } else {

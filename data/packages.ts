@@ -8,6 +8,8 @@ export type PackageData = {
   currency: Currency
   price: number // major units (e.g., 350.99 or 65000)
   deposit: number // major units
+  displayPrice: string
+  displayDeposit: string
   includes: string[]
   durationEstimate: string
   availability: Availability
@@ -23,6 +25,8 @@ export const packages: PackageData[] = [
     currency: "GBP",
     price: 350.99,
     deposit: 120,
+    displayPrice: "£350.99",
+    displayDeposit: "£120",
     includes: [
       "Bridal trial session tailored to your look and theme",
       "Premium skin prep and luxury finish",
@@ -40,6 +44,8 @@ export const packages: PackageData[] = [
     currency: "NGN",
     price: 65000,
     deposit: 15000,
+    displayPrice: "₦65,000",
+    displayDeposit: "₦15,000",
     includes: [
       "Flawless makeup application",
       "Premium skin prep and lash styling",
@@ -57,6 +63,8 @@ export const packages: PackageData[] = [
     currency: "NGN",
     price: 60000,
     deposit: 15000,
+    displayPrice: "₦60,000",
+    displayDeposit: "₦15,000",
     includes: [
       "30-second reel included",
       "1-2 outfit changes for variety",

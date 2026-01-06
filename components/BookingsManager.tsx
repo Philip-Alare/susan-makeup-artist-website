@@ -41,7 +41,8 @@ export default function BookingsManager() {
     setError(null)
     try {
       // Authenticated via cookie now
-      const res = await fetch(`/api/admin/bookings${status ? `?status=${status}` : ""}`)
+      const t = Date.now()
+      const res = await fetch(`/api/admin/bookings${status ? `?status=${status}&t=${t}` : `?t=${t}`}`, { cache: "no-store" })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Failed to load bookings")
       setBookings(data.bookings || [])
@@ -60,8 +61,10 @@ export default function BookingsManager() {
     setBookings(prev => prev.map(b => b.reference === reference ? { ...b, status: newStatus } : b))
 
     try {
-      const res = await fetch('/api/admin/bookings', {
+      const t = Date.now()
+      const res = await fetch(`/api/admin/bookings?t=${t}`, {
         method: 'PATCH',
+        cache: "no-store",
         headers: {
           'Content-Type': 'application/json',
         },
