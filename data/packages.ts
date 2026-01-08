@@ -112,3 +112,56 @@ export function formatDeposit(pkg: PackageData) {
   }
   return `${pkg.currency}${pkg.deposit.toLocaleString("en-GB", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
 }
+
+const SYMBOL_TO_CODE: Record<string, string> = { "₦": "NGN", "£": "GBP", "$": "USD", "€": "EUR" }
+
+function parseMoney(raw: any): { code?: string; amount: number } {
+  if (typeof raw === "number") return { amount: raw }
+  const s = String(raw || "")
+  const m = s.match(/^([A-Z]{3}|[^\w\s])?\s*([\d,]+(?:\.\d+)?)$/)
+  const code = m?.[1]?.length === 3 ? m[1] : (m?.[1] ? SYMBOL_TO_CODE[m[1]] : undefined)
+  const amount = m?.[2] ? Number(String(m[2]).replace(/,/g, "")) : Number(s.replace(/[^0-9.]/g, "")) || 0
+  return { code, amount }
+}
+
+function normalizeCurrency(raw: any, fallback?: string): string {
+  const c = typeof raw === "string" ? raw : ""
+  if (KNOWN_CURRENCIES.includes(c)) return c
+  if (SYMBOL_TO_CODE[c]) {
+    const cc = SYMBOL_TO_CODE[c]
+    if (KNOWN_CURRENCIES.includes(cc)) return cc
+  }
+  if (fallback && KNOWN_CURRENCIES.includes(fallback)) return fallback
+  return "GBP"
+}
+
+export function normalizePackage(p: any, idx: number, defaults: PackageData[] = packages): PackageData {
+  const priceInfo = parseMoney(p?.price)
+  const depInfo = parseMoney(p?.deposit)
+  const currency = normalizeCurrency(p?.currency, priceInfo.code)
+  const defaultPkg = defaults.find((dp) => dp.name === p?.name)
+  const id = typeof p?.id === "string" && p?.id ? p.id : (defaultPkg ? defaultPkg.id : `${String(p?.name || "Package").toLowerCase().replace(/\s+/g, "-")}-${idx}`)
+  const value = typeof p?.price === "number" ? p.price : priceInfo.amount
+  const depositVal = typeof p?.deposit === "number" ? p.deposit : depInfo.amount
+  const includes = Array.isArray(p?.includes)
+    ? p.includes
+    : Array.isArray(p?.features)
+    ? p.features
+    : Array.isArray(p?.deliverables)
+    ? p.deliverables
+    : []
+  const pkg: PackageData = {
+    id,
+    name: p?.name || `Package ${idx + 1}`,
+    description: p?.description || p?.note || p?.originalPrice || "",
+    currency,
+    price: value,
+    deposit: depositVal,
+    displayPrice: formatPrice({ id, name: "", description: "", currency, price: value, deposit: depositVal, displayPrice: "", displayDeposit: "", includes: [], durationEstimate: "", availability: "BOTH" }),
+    displayDeposit: formatDeposit({ id, name: "", description: "", currency, price: value, deposit: depositVal, displayPrice: "", displayDeposit: "", includes: [], durationEstimate: "", availability: "BOTH" }),
+    includes,
+    durationEstimate: p?.durationEstimate || "",
+    availability: (p?.availability as Availability) || "BOTH",
+  }
+  return pkg
+}

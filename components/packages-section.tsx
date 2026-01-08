@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Check } from "lucide-react"
 
-import { packages, type PackageData, type Currency } from "../data/packages"
+import { packages, type PackageData, type Currency, normalizePackage } from "../data/packages"
 import { useEffect, useState } from "react"
 import { getSection } from "@/lib/api"
 
@@ -20,36 +20,7 @@ export default function PackagesSection() {
       try {
         const data: any = await getSection("packages")
         const api = Array.isArray(data?.packages) ? data.packages : []
-        const mapped: PackageData[] = api.map((p: any, idx: number) => {
-          const hasSplit = typeof p.currency === "string" && typeof p.price === "number"
-          const m = !hasSplit ? String(p.price || "").match(/^([A-Z]{3}|[^\w\s])?\s*([\d,]+(?:\.\d+)?)$/) : null
-          const currency: Currency = hasSplit ? (p.currency as Currency) : "GBP"
-          const value = hasSplit ? Number(p.price) : m?.[2] ? Number(String(m[2]).replace(/,/g, "")) : Number(String(p.price || "").replace(/[^0-9.]/g, "")) || 0
-          
-          // Parse deposit which might be "GBP 50" or just number
-          const mDep = typeof p.deposit === "string" ? p.deposit.match(/^([A-Z]{3}|[^\w\s])?\s*([\d,]+(?:\.\d+)?)$/) : null
-          const depositVal = typeof p.deposit === "number" ? p.deposit : mDep ? Number(String(mDep[2]).replace(/,/g, "")) : Number(String(p.deposit || "").replace(/[^0-9.]/g, "")) || 0
-
-          return {
-            id: typeof p.id === "string" && p.id ? p.id : `${String(p.name || "Package").toLowerCase().replace(/\s+/g, "-")}-${idx}`,
-            name: p.name || `Package ${idx + 1}`,
-            description: p.description || p.originalPrice || "",
-            currency,
-            price: value,
-            deposit: depositVal,
-            displayPrice: typeof p.price === "string" ? String(p.price).trim() : typeof currency === "string" ? `${currency}${value}` : String(value),
-            displayDeposit: typeof p.deposit === "string" ? String(p.deposit).trim() : typeof currency === "string" ? `${currency}${depositVal}` : String(depositVal),
-            includes: Array.isArray(p.includes)
-              ? p.includes
-              : Array.isArray(p.features)
-              ? p.features
-              : Array.isArray(p.deliverables)
-              ? p.deliverables
-              : [],
-            durationEstimate: p.durationEstimate || "",
-            availability: (p.availability as any) || "BOTH",
-          }
-        })
+        const mapped: PackageData[] = api.map((p: any, idx: number) => normalizePackage(p, idx))
         if (mapped.length) setList(mapped)
         const avail =
           api[0]?.availability || api[1]?.availability || api[2]?.availability || data?.availability || null
