@@ -94,20 +94,20 @@ export default function AdminBookingsPage() {
   }, [bookings, statusFilter])
 
   return (
-    <div className="min-h-screen bg-white px-4 py-12">
-      <div className="mx-auto max-w-6xl rounded-2xl border border-[#E5E5E5] bg-white p-8 shadow-lg">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="min-h-screen bg-white px-4 py-6 sm:py-8 lg:py-12">
+      <div className="mx-auto max-w-6xl rounded-2xl border border-[#E5E5E5] bg-white p-4 shadow-lg sm:p-6 lg:p-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-[#666666]">Admin</p>
             <h1 className="font-display text-3xl text-black">Bookings</h1>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Admin password"
-              className="rounded border border-[#E5E5E5] bg-white px-3 py-2 text-sm text-black"
+              className="w-full rounded border border-[#E5E5E5] bg-white px-3 py-2 text-sm text-black"
             />
             <button
               onClick={() => fetchBookings(password, statusFilter)}
@@ -121,7 +121,7 @@ export default function AdminBookingsPage() {
                 setStatusFilter(e.target.value)
                 fetchBookings(password, e.target.value || undefined)
               }}
-              className="rounded border border-[#E5E5E5] bg-white px-3 py-2 text-sm text-black"
+              className="w-full rounded border border-[#E5E5E5] bg-white px-3 py-2 text-sm text-black sm:col-span-2 lg:w-auto"
             >
               <option value="">All</option>
               <option value="pending_payment">Pending Payment</option>
@@ -134,7 +134,85 @@ export default function AdminBookingsPage() {
         {error && <p className="mt-3 text-sm text-[#1A1A1A]">{error}</p>}
         {loading && <p className="mt-3 text-[#666666]">Loading...</p>}
 
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6 space-y-4 md:hidden">
+          {filtered.map((b) => (
+            <div key={b.id} className="rounded-2xl border border-[#E5E5E5] bg-[#FAFAFA] p-4">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-[#F0F0F0] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-black">
+                    {new Date(b.created_at).toLocaleDateString()}
+                  </span>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                      b.status === "paid"
+                        ? "bg-black text-[#FFFFFF]"
+                        : (b.status === "pending" || b.status === "pending_payment")
+                          ? "bg-[#E5E5E5] text-black"
+                          : "bg-[#1A1A1A] text-[#FFFFFF]"
+                    }`}
+                  >
+                    {b.status.toUpperCase().replace('_', ' ')}
+                  </span>
+                </div>
+
+                <div>
+                  <p className="text-xs uppercase tracking-[0.18em] text-[#666666]">Reference</p>
+                  <p className="mt-1 break-all font-mono text-sm text-black">{b.reference}</p>
+                </div>
+
+                <div>
+                  <p className="text-xs uppercase tracking-[0.18em] text-[#666666]">Package</p>
+                  <p className="mt-1 font-semibold text-black">{b.package_name}</p>
+                  <p className="mt-1 text-sm text-[#666666]">{formatter(b.amount_paid, b.currency)}</p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-[#666666]">Appointment</p>
+                    <p className="mt-1 text-sm text-black">{b.appointment_date}</p>
+                    <p className="text-sm text-[#666666]">{b.time_window}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-[#666666]">Location</p>
+                    <p className="mt-1 text-sm text-black">{b.country}, {b.city}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-[#666666]">Client</p>
+                    <p className="mt-1 text-sm font-medium text-black">{b.customer_name}</p>
+                    <p className="text-sm text-[#666666]">{b.customer_phone}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  {(b.status === 'pending_payment' || b.status === 'pending') && (
+                    <button
+                      onClick={() => updateStatus(b.reference, 'paid')}
+                      className="rounded bg-black px-3 py-2 text-sm font-semibold text-[#FFFFFF] transition hover:bg-[#1A1A1A]"
+                    >
+                      Mark Paid
+                    </button>
+                  )}
+                  {b.status === 'paid' && (
+                    <button
+                      onClick={() => updateStatus(b.reference, 'pending_payment')}
+                      className="rounded border border-black px-3 py-2 text-sm font-semibold text-black transition hover:bg-[#F5F5F5]"
+                    >
+                      Mark Pending
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {!filtered.length && (
+            <div className="rounded-2xl border border-dashed border-[#E5E5E5] px-4 py-8 text-center text-[#666666]">
+              No bookings yet.
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 hidden overflow-x-auto md:block">
           <table className="min-w-full text-sm text-black">
             <thead>
               <tr className="border-b border-[#E5E5E5] bg-[#F5F5F5] text-left">

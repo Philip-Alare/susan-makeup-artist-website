@@ -25,6 +25,9 @@ export default function TextEditor({
   const [mode, setMode] = useState<"form" | "json">("form");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [pendingSetter, setPendingSetter] = useState<((url: string) => void) | null>(null);
+  const stackedHeaderClass = "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between";
+  const mediaRowClass = "flex flex-col gap-4 lg:flex-row lg:items-start";
+  const mediaActionRowClass = "flex flex-col gap-2 sm:flex-row sm:items-center";
 
   useEffect(() => {
     async function load() {
@@ -103,8 +106,8 @@ export default function TextEditor({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex items-start gap-3 sm:gap-4">
           <Button variant="ghost" onClick={() => onNavigate("content")} className="p-2">
             <ArrowLeft className="w-5 h-5" />
           </Button>
@@ -113,11 +116,11 @@ export default function TextEditor({
             <p className="text-sm text-muted-foreground">Manage content and layout</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
           <Button
             variant="ghost"
             onClick={() => setMode(mode === "form" ? "json" : "form")}
-            className="p-2"
+            className="w-full justify-center p-2 sm:w-auto"
           >
             {mode === "form" ? "Switch to JSON" : "Switch to Form"}
           </Button>
@@ -125,7 +128,7 @@ export default function TextEditor({
             variant="primary"
             onClick={handleSave}
             disabled={saving || loading}
-            className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+            className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
           >
             <Save className="w-4 h-4" />
             {saving ? "Saving..." : "Save Changes"}
@@ -177,11 +180,11 @@ export default function TextEditor({
                 />
               </div>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className={stackedHeaderClass}>
                   <label className="text-sm font-medium text-black">Slides</label>
           <Button
             variant="primary"
-            className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+            className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
             onClick={() => {
               const slides = Array.isArray(data.hero.slides) ? data.hero.slides : [];
               const nextSlide = {
@@ -206,18 +209,18 @@ export default function TextEditor({
                 <div className="space-y-6">
                   {(Array.isArray(data.hero.slides) ? data.hero.slides : []).map((slide: any, idx: number) => (
                     <div key={idx} className="rounded-lg border border-[#E5E5E5] bg-white p-3">
-                      <div className="flex items-start gap-4">
+                      <div className={mediaRowClass}>
                         <img
                           src={slide.image}
                           alt={slide.title || `Slide ${idx + 1}`}
-                          className="w-40 h-28 object-cover rounded"
+                          className="h-48 w-full rounded object-cover sm:h-40 lg:h-28 lg:w-40"
                           onError={(e) => ((e.currentTarget.src = "/assets/placeholder.jpg"))}
                         />
                         <div className="flex-1 space-y-3">
-                          <div className="flex items-center gap-3">
+                          <div className={mediaActionRowClass}>
                             <Button
                               variant="primary"
-                              className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+                              className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                               onClick={() =>
                                 openFilePickerFor((url) => {
                                   const slides = Array.isArray(data.hero.slides) ? [...data.hero.slides] : [];
@@ -234,6 +237,7 @@ export default function TextEditor({
                             </Button>
                             <Button
                               variant="ghost"
+                              className="w-full justify-center sm:w-auto"
                               onClick={() => {
                                 const slides = Array.isArray(data.hero.slides) ? [...data.hero.slides] : [];
                                 slides.splice(idx, 1);
@@ -324,7 +328,7 @@ export default function TextEditor({
                           {Array.isArray(slide.imageHistory) && slide.imageHistory.length > 0 && (
                             <div className="mt-3">
                               <p className="text-sm text-muted-foreground mb-2">Previous Images</p>
-                              <div className="grid grid-cols-4 gap-2">
+                              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                                 {slide.imageHistory.slice(0, 8).map((prevUrl: string, pidx: number) => (
                                   <button
                                     key={pidx}
@@ -365,20 +369,23 @@ export default function TextEditor({
                 <label className="block text-sm font-medium text-black">Locations</label>
                 <div className="space-y-2">
                   {(Array.isArray(data.locations) ? data.locations : []).map((loc: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <Input
-                        id={`about_location_${idx}`}
-                        value={loc}
-                        onChange={(e) => {
-                          const list = Array.isArray(data.locations) ? [...data.locations] : []
-                          list[idx] = e.target.value
-                          const next = { ...data, locations: list }
-                          setData(next)
-                          setRawJson(JSON.stringify(next, null, 2))
-                        }}
-                      />
+                    <div key={idx} className="flex flex-col gap-2 sm:flex-row sm:items-start">
+                      <div className="w-full">
+                        <Input
+                          id={`about_location_${idx}`}
+                          value={loc}
+                          onChange={(e) => {
+                            const list = Array.isArray(data.locations) ? [...data.locations] : []
+                            list[idx] = e.target.value
+                            const next = { ...data, locations: list }
+                            setData(next)
+                            setRawJson(JSON.stringify(next, null, 2))
+                          }}
+                        />
+                      </div>
                       <Button
                         variant="ghost"
+                        className="w-full justify-center sm:w-auto"
                         onClick={() => {
                           const list = Array.isArray(data.locations) ? [...data.locations] : []
                           list.splice(idx, 1)
@@ -410,20 +417,23 @@ export default function TextEditor({
                 <label className="block text-sm font-medium text-black">Training Notes</label>
                 <div className="space-y-2">
                   {(Array.isArray(data.training) ? data.training : []).map((note: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <Input
-                        id={`about_training_${idx}`}
-                        value={note}
-                        onChange={(e) => {
-                          const list = Array.isArray(data.training) ? [...data.training] : []
-                          list[idx] = e.target.value
-                          const next = { ...data, training: list }
-                          setData(next)
-                          setRawJson(JSON.stringify(next, null, 2))
-                        }}
-                      />
+                    <div key={idx} className="flex flex-col gap-2 sm:flex-row sm:items-start">
+                      <div className="w-full">
+                        <Input
+                          id={`about_training_${idx}`}
+                          value={note}
+                          onChange={(e) => {
+                            const list = Array.isArray(data.training) ? [...data.training] : []
+                            list[idx] = e.target.value
+                            const next = { ...data, training: list }
+                            setData(next)
+                            setRawJson(JSON.stringify(next, null, 2))
+                          }}
+                        />
+                      </div>
                       <Button
                         variant="ghost"
+                        className="w-full justify-center sm:w-auto"
                         onClick={() => {
                           const list = Array.isArray(data.training) ? [...data.training] : []
                           list.splice(idx, 1)
@@ -492,11 +502,11 @@ export default function TextEditor({
               </div>
             </div>
             <div className="mt-6">
-              <div className="flex items-center justify-between">
+              <div className={stackedHeaderClass}>
                 <label className="text-sm font-medium text-black">Services</label>
         <Button
           variant="primary"
-          className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+          className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
           onClick={() => {
             const list = Array.isArray(data.services) ? data.services : []
             const nextItem = { title: "", description: "", features: [], image: "/assets/placeholder.jpg", imageHistory: [] }
@@ -512,18 +522,18 @@ export default function TextEditor({
               <div className="mt-4 space-y-6">
                 {(Array.isArray(data.services) ? data.services : []).map((svc: any, idx: number) => (
                   <div key={idx} className="rounded-lg border border-[#E5E5E5] bg-white p-3">
-                    <div className="flex items-start gap-4">
+                    <div className={mediaRowClass}>
                       <img
                         src={svc.image}
                         alt={svc.title || `Service ${idx + 1}`}
-                        className="w-40 h-28 object-cover rounded"
+                        className="h-48 w-full rounded object-cover sm:h-40 lg:h-28 lg:w-40"
                         onError={(e) => ((e.currentTarget.src = "/assets/placeholder.jpg"))}
                       />
                       <div className="flex-1 space-y-3">
-                        <div className="flex items-center gap-3">
+                        <div className={mediaActionRowClass}>
                           <Button
                             variant="primary"
-                            className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+                            className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                             onClick={() =>
                               openFilePickerFor((url) => {
                                 const list = Array.isArray(data.services) ? [...data.services] : []
@@ -540,6 +550,7 @@ export default function TextEditor({
                           </Button>
                           <Button
                             variant="ghost"
+                            className="w-full justify-center sm:w-auto"
                             onClick={() => {
                               const list = Array.isArray(data.services) ? [...data.services] : []
                               list.splice(idx, 1)
@@ -605,11 +616,11 @@ export default function TextEditor({
       {mode === "form" && section === "packages" && data?.packages && (
         <Card>
           <CardContent>
-            <div className="flex items-center justify-between">
+            <div className={stackedHeaderClass}>
               <label className="text-sm font-medium text-black">Packages</label>
         <Button
           variant="primary"
-          className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+          className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
           onClick={() => {
             const list = Array.isArray(data.packages) ? data.packages : []
             const nextItem = {
@@ -635,21 +646,24 @@ export default function TextEditor({
             <div className="mt-4 space-y-6">
               {(Array.isArray(data.packages) ? data.packages : []).map((pkg: any, idx: number) => (
                 <div key={idx} className="rounded-lg border border-[#E5E5E5] bg-white p-3">
-                  <div className="flex items-center justify-between">
-                    <Input
-                      label="Name"
-                      id={`package_${idx}_name`}
-                      value={pkg.name || ""}
-                      onChange={(e) => {
-                        const list = Array.isArray(data.packages) ? [...data.packages] : []
-                        list[idx] = { ...list[idx], name: e.target.value }
-                        const next = { ...data, packages: list }
-                        setData(next)
-                        setRawJson(JSON.stringify(next, null, 2))
-                      }}
-                    />
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="w-full">
+                      <Input
+                        label="Name"
+                        id={`package_${idx}_name`}
+                        value={pkg.name || ""}
+                        onChange={(e) => {
+                          const list = Array.isArray(data.packages) ? [...data.packages] : []
+                          list[idx] = { ...list[idx], name: e.target.value }
+                          const next = { ...data, packages: list }
+                          setData(next)
+                          setRawJson(JSON.stringify(next, null, 2))
+                        }}
+                      />
+                    </div>
                     <Button
                       variant="ghost"
+                      className="w-full justify-center sm:w-auto"
                       onClick={() => {
                         const list = Array.isArray(data.packages) ? [...data.packages] : []
                         list.splice(idx, 1)
@@ -787,11 +801,11 @@ export default function TextEditor({
       {mode === "form" && section === "portfolio" && data?.items && (
         <Card>
           <CardContent>
-            <div className="flex items-center justify-between">
+            <div className={stackedHeaderClass}>
               <label className="text-sm font-medium text-black">Portfolio Items</label>
               <Button
                 variant="primary"
-                className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+                className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                 onClick={() => {
                   const list = Array.isArray(data.items) ? data.items : []
                   const nextItem = { title: "", category: "", media: "/assets/placeholder.jpg", alt: "" }
@@ -807,18 +821,18 @@ export default function TextEditor({
             <div className="mt-4 space-y-6">
               {(Array.isArray(data.items) ? data.items : []).map((it: any, idx: number) => (
                 <div key={idx} className="rounded-lg border border-[#E5E5E5] bg-white p-3">
-                  <div className="flex items-start gap-4">
+                  <div className={mediaRowClass}>
                     <img
                       src={it.media}
                       alt={it.alt || `Item ${idx + 1}`}
-                      className="w-40 h-28 object-cover rounded"
+                      className="h-48 w-full rounded object-cover sm:h-40 lg:h-28 lg:w-40"
                       onError={(e) => ((e.currentTarget.src = "/assets/placeholder.jpg"))}
                     />
                     <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-3">
+                      <div className={mediaActionRowClass}>
                         <Button
                           variant="primary"
-                          className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+                          className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                           onClick={() =>
                             openFilePickerFor((url) => {
                               const list = Array.isArray(data.items) ? [...data.items] : []
@@ -833,6 +847,7 @@ export default function TextEditor({
                         </Button>
                         <Button
                           variant="ghost"
+                          className="w-full justify-center sm:w-auto"
                           onClick={() => {
                             const list = Array.isArray(data.items) ? [...data.items] : []
                             list.splice(idx, 1)
@@ -984,20 +999,23 @@ export default function TextEditor({
               <label className="text-sm font-medium text-black">Address Lines</label>
               <div className="mt-2 space-y-2">
                 {(Array.isArray(data.address?.lines) ? data.address.lines : []).map((line: string, idx: number) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <Input
-                      id={`contact_addr_${idx}`}
-                      value={line}
-                      onChange={(e) => {
-                        const lines = Array.isArray(data.address?.lines) ? [...data.address.lines] : []
-                        lines[idx] = e.target.value
-                        const next = { ...data, address: { ...(data.address || {}), lines } }
-                        setData(next)
-                        setRawJson(JSON.stringify(next, null, 2))
-                      }}
-                    />
+                  <div key={idx} className="flex flex-col gap-2 sm:flex-row sm:items-start">
+                    <div className="w-full">
+                      <Input
+                        id={`contact_addr_${idx}`}
+                        value={line}
+                        onChange={(e) => {
+                          const lines = Array.isArray(data.address?.lines) ? [...data.address.lines] : []
+                          lines[idx] = e.target.value
+                          const next = { ...data, address: { ...(data.address || {}), lines } }
+                          setData(next)
+                          setRawJson(JSON.stringify(next, null, 2))
+                        }}
+                      />
+                    </div>
                     <Button
                       variant="ghost"
+                      className="w-full justify-center sm:w-auto"
                       onClick={() => {
                         const lines = Array.isArray(data.address?.lines) ? [...data.address.lines] : []
                         lines.splice(idx, 1)
@@ -1011,10 +1029,10 @@ export default function TextEditor({
                   </div>
                 ))}
               </div>
-              <div className="mt-2 flex items-center gap-3">
+              <div className="mt-2 flex flex-col gap-3">
                 <Button
                   variant="primary"
-                  className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+                  className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                   onClick={() => {
                     const lines = Array.isArray(data.address?.lines) ? [...data.address.lines] : []
                     const next = { ...data, address: { ...(data.address || {}), lines: [...lines, ""] } }
@@ -1025,16 +1043,18 @@ export default function TextEditor({
                   <Plus className="w-4 h-4" />
                   Add Line
                 </Button>
-                <Input
-                  label="Travel Note"
-                  id="contact_travelNote"
-                  value={data.travelNote || ""}
-                  onChange={(e) => {
-                    const next = { ...data, travelNote: e.target.value }
-                    setData(next)
-                    setRawJson(JSON.stringify(next, null, 2))
-                  }}
-                />
+                <div className="w-full">
+                  <Input
+                    label="Travel Note"
+                    id="contact_travelNote"
+                    value={data.travelNote || ""}
+                    onChange={(e) => {
+                      const next = { ...data, travelNote: e.target.value }
+                      setData(next)
+                      setRawJson(JSON.stringify(next, null, 2))
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -1045,7 +1065,7 @@ export default function TextEditor({
         <Card>
           <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className={stackedHeaderClass}>
                     <label className="text-sm font-medium text-black">JSON Editor</label>
                     <span className="text-xs text-muted-foreground">Edit raw content structure</span>
                 </div>
@@ -1116,10 +1136,10 @@ export default function TextEditor({
                     className="w-full h-48 object-cover rounded"
                     onError={(e) => ((e.currentTarget.src = "/assets/placeholder.jpg"))}
                   />
-                  <div className="mt-3 flex items-center gap-3">
+                  <div className="mt-3 flex flex-col gap-3">
                     <Button
                       variant="primary"
-                      className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+                      className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                       onClick={() =>
                         openFilePickerFor((url) => {
                           const prev = data.about.image;
@@ -1134,21 +1154,23 @@ export default function TextEditor({
                     >
                       Replace Image
                     </Button>
-                    <Input
-                      label="Alt Text"
-                      id="about_alt"
-                      value={data.about.imageAlt || ""}
-                      onChange={(e) => {
-                        const next = { ...data, about: { ...data.about, imageAlt: e.target.value } };
-                        setData(next);
-                        setRawJson(JSON.stringify(next, null, 2));
-                      }}
-                    />
+                    <div className="w-full">
+                      <Input
+                        label="Alt Text"
+                        id="about_alt"
+                        value={data.about.imageAlt || ""}
+                        onChange={(e) => {
+                          const next = { ...data, about: { ...data.about, imageAlt: e.target.value } };
+                          setData(next);
+                          setRawJson(JSON.stringify(next, null, 2));
+                        }}
+                      />
+                    </div>
                   </div>
                   {Array.isArray(data.about.imageHistory) && data.about.imageHistory.length > 0 && (
                     <div className="mt-4">
                       <p className="text-sm text-muted-foreground mb-2">Previous Images</p>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                         {data.about.imageHistory.slice(0, 6).map((prevUrl: string, idx: number) => (
                           <button
                             key={idx}

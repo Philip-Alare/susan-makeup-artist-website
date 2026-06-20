@@ -1,12 +1,14 @@
-import { LayoutDashboard, FileText, Image, Settings, LogOut, Calendar } from 'lucide-react';
+import { LayoutDashboard, FileText, Image, Settings, LogOut, Calendar, X } from 'lucide-react';
 
 interface SidebarProps {
   currentPage: string;
   onNavigate: (page: string) => void;
   onLogout?: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ currentPage, onNavigate, onLogout }: SidebarProps) {
+export function Sidebar({ currentPage, onNavigate, onLogout, isOpen = false, onClose }: SidebarProps) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'bookings', label: 'Bookings', icon: Calendar },
@@ -16,52 +18,82 @@ export function Sidebar({ currentPage, onNavigate, onLogout }: SidebarProps) {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-black text-[#FFFFFF] flex flex-col shadow-xl z-40">
-      {/* Logo Section */}
-      <div className="p-6 border-b border-[#2A2A2A]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-black flex items-center justify-center shadow-md border border-white">
-            <span className="text-[#FFFFFF] font-bold text-xl">SM</span>
-          </div>
-          <div>
-            <h2 className="text-[#FFFFFF] font-display">Susan Makeup</h2>
-            <p className="text-xs text-[#999999]">Admin Dashboard</p>
+    <>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close navigation menu"
+        className={`fixed inset-0 z-40 bg-black/45 transition-opacity duration-300 lg:hidden ${
+          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      />
+
+      <aside
+        className={`fixed left-0 top-0 z-50 flex h-screen w-[85vw] max-w-72 flex-col bg-black text-[#FFFFFF] shadow-xl transition-transform duration-300 lg:w-64 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0`}
+      >
+        <div className="border-b border-[#2A2A2A] p-5 lg:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white bg-black shadow-md">
+                <span className="text-xl font-bold text-[#FFFFFF]">SM</span>
+              </div>
+              <div>
+                <h2 className="font-display text-[#FFFFFF]">Susan Makeup</h2>
+                <p className="text-xs text-[#999999]">Admin Dashboard</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-2 text-[#E5E5E5] transition-colors hover:bg-[#111111] lg:hidden"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Navigation Menu */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = currentPage === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                isActive
-                  ? 'bg-[#1A1A1A] text-[#FFFFFF] transform scale-[1.02] font-medium'
-                  : 'text-[#E5E5E5] hover:bg-[#111111] hover:transform hover:scale-[1.02]'
-              }`}
-            >
-              <Icon className="w-5 h-5" />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
+        <nav className="flex-1 space-y-2 overflow-y-auto px-3 py-5 lg:px-4 lg:py-6">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = currentPage === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  onNavigate(item.id);
+                  onClose?.();
+                }}
+                className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 ${
+                  isActive
+                    ? 'scale-[1.02] bg-[#1A1A1A] font-medium text-[#FFFFFF]'
+                    : 'text-[#E5E5E5] hover:scale-[1.02] hover:bg-[#111111]'
+                }`}
+              >
+                <Icon className="h-5 w-5 shrink-0" />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
-      {/* Logout Button */}
-      <div className="p-4 border-t border-[#2A2A2A]">
-        <button
-          onClick={onLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[#E5E5E5] hover:bg-[#111111] hover:text-[#FFFFFF] transition-all duration-200"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>Logout</span>
-        </button>
-      </div>
-    </aside>
+        <div className="border-t border-[#2A2A2A] p-3 lg:p-4">
+          <button
+            type="button"
+            onClick={() => {
+              onClose?.();
+              onLogout?.();
+            }}
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-[#E5E5E5] transition-all duration-200 hover:bg-[#111111] hover:text-[#FFFFFF]"
+          >
+            <LogOut className="h-5 w-5 shrink-0" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }

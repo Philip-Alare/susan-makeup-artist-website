@@ -19,14 +19,28 @@ import { Eye, EyeOff } from 'lucide-react';
 export default function DashboardApp() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [editorSection, setEditorSection] = useState<string | undefined>(undefined);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isSidebarOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isSidebarOpen]);
 
   const handleNavigate = (page: string, section?: string) => {
     setCurrentPage(page);
     if (section) setEditorSection(section);
+    setIsSidebarOpen(false);
   };
 
   const handleLogout = async () => {
+    setIsSidebarOpen(false);
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
   };
@@ -57,14 +71,20 @@ export default function DashboardApp() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] flex">
-      <Sidebar currentPage={currentPage} onNavigate={handleNavigate} onLogout={handleLogout} />
-      
-      <div className="flex-1 ml-64 flex flex-col">
-        <Navbar onMenuToggle={() => {}} onLogout={handleLogout} />
-        
-        <main className="flex-1 p-8 mt-16 overflow-y-auto">
-          <div className="max-w-7xl mx-auto animate-in fade-in duration-300">
+    <div className="min-h-screen bg-[#F5F5F5]">
+      <Sidebar
+        currentPage={currentPage}
+        onNavigate={handleNavigate}
+        onLogout={handleLogout}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      <div className="flex min-h-screen flex-col lg:ml-64">
+        <Navbar onMenuToggle={() => setIsSidebarOpen((open) => !open)} onLogout={handleLogout} />
+
+        <main className="flex-1 overflow-y-auto px-4 pb-6 pt-20 sm:px-6 sm:pb-8 lg:px-8 lg:pb-10 lg:pt-24">
+          <div className="mx-auto max-w-7xl animate-in fade-in duration-300">
             {renderContent()}
           </div>
         </main>
@@ -162,7 +182,7 @@ function SettingsForm() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-xl font-display text-black">Settings</h2>
           <p className="text-sm text-muted-foreground">Manage admin credentials and site settings</p>
@@ -171,7 +191,7 @@ function SettingsForm() {
           variant="primary"
           onClick={handleSave}
           disabled={saving || loading}
-          className="bg-black text-[#FFFFFF] hover:bg-[#1A1A1A]"
+          className="w-full bg-black text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
         >
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
@@ -205,7 +225,7 @@ function SettingsForm() {
               </div>
             )}
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-sm text-black">
                 Status: {data.admin?.recoveryKeyHash ? '✅ Configured' : '❌ Not Configured'}
               </span>
@@ -213,7 +233,7 @@ function SettingsForm() {
                 variant="secondary"
                 onClick={handleGenerateRecoveryKey}
                 disabled={saving || loading}
-                className="border-[#E5E5E5] text-black hover:bg-[#F5F5F5]"
+                className="w-full border-[#E5E5E5] text-black hover:bg-[#F5F5F5] sm:w-auto"
               >
                 {data.admin?.recoveryKeyHash ? 'Regenerate Key' : 'Generate Key'}
               </Button>

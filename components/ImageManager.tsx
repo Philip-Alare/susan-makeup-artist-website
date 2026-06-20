@@ -92,17 +92,17 @@ function ImageManager({ onDelete }: ImageManagerProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-black text-xl font-semibold">Gallery Manager</h1>
           <p className="text-muted-foreground">Upload and manage portfolio images</p>
         </div>
-          <label className="inline-flex items-center gap-2 bg-black text-[#FFFFFF] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#1A1A1A] font-medium transition-colors">
-            <Upload className="w-5 h-5" />
-            {uploading ? "Uploading..." : "Upload New Image"}
-            <input
-              type="file"
-              className="hidden"
+        <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-black px-4 py-2 font-medium text-[#FFFFFF] transition-colors hover:bg-[#1A1A1A] sm:w-auto">
+          <Upload className="w-5 h-5" />
+          {uploading ? "Uploading..." : "Upload New Image"}
+          <input
+            type="file"
+            className="hidden"
             accept="image/*"
             onChange={handleFileChange}
             disabled={uploading}
@@ -122,7 +122,7 @@ function ImageManager({ onDelete }: ImageManagerProps) {
           <p className="text-muted-foreground">Loading gallery...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {images.map((img) => (
             <Card key={img.id} className="group relative overflow-hidden">
               <div className="aspect-square bg-muted relative">
@@ -143,7 +143,7 @@ function ImageManager({ onDelete }: ImageManagerProps) {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 )}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/45 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                   <a
                     href={img.url}
                     target="_blank"

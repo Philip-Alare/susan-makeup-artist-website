@@ -87,30 +87,30 @@ export default function BookingsManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-black text-xl font-semibold">Bookings</h1>
           <p className="text-muted-foreground">Manage appointments and payments</p>
         </div>
-        <div className="flex items-center gap-3">
-            <div className="relative">
-                <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="appearance-none bg-white border border-[#E5E5E5] text-black py-2 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-black cursor-pointer"
-                >
-                <option value="">All Status</option>
-                <option value="pending_payment">Pending Payment</option>
-                <option value="paid">Paid</option>
-                <option value="cancelled">Cancelled</option>
-                </select>
-                <Filter className="absolute right-3 top-2.5 w-4 h-4 text-muted-foreground pointer-events-none" />
-            </div>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-auto">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full cursor-pointer appearance-none rounded-lg border border-[#E5E5E5] bg-white py-2 pl-4 pr-10 text-black focus:outline-none focus:ring-2 focus:ring-black sm:min-w-44"
+            >
+              <option value="">All Status</option>
+              <option value="pending_payment">Pending Payment</option>
+              <option value="paid">Paid</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <Filter className="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          </div>
           <Button
             onClick={() => fetchBookings(statusFilter)}
             disabled={loading}
             variant="ghost"
-            className="p-2"
+            className="w-full justify-center sm:w-auto sm:p-2"
           >
             <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
           </Button>
@@ -126,11 +126,11 @@ export default function BookingsManager() {
       <div className="grid gap-4">
         {filtered.map((booking) => (
           <Card key={booking.id} className="overflow-hidden">
-            <div className="p-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div className="p-4 sm:p-6">
+              <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-sm text-muted-foreground">#{booking.reference}</span>
+                  <div className="mb-1 flex flex-wrap items-center gap-2">
+                    <span className="break-all font-mono text-sm text-muted-foreground">#{booking.reference}</span>
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide
                       ${booking.status === 'paid' ? 'bg-black text-[#FFFFFF]' : 
                         (booking.status === 'pending' || booking.status === 'pending_payment') ? 'bg-[#E5E5E5] text-black' : 
@@ -140,7 +140,7 @@ export default function BookingsManager() {
                   </div>
                   <h3 className="font-semibold text-lg text-black">{booking.package_name}</h3>
                 </div>
-                <div className="text-right flex flex-col items-end gap-2">
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end sm:text-right">
                   <div>
                     <p className="text-2xl font-bold text-black">
                       {formatter(booking.amount_paid, booking.currency)}
@@ -151,7 +151,7 @@ export default function BookingsManager() {
                   {(booking.status === 'pending_payment' || booking.status === 'pending') && (
                     <Button 
                       size="sm" 
-                      className="bg-black hover:bg-[#1A1A1A] text-[#FFFFFF] text-xs h-8"
+                      className="h-8 w-full bg-black text-xs text-[#FFFFFF] hover:bg-[#1A1A1A] sm:w-auto"
                       onClick={() => updateStatus(booking.reference, 'paid')}
                     >
                       Mark Paid
@@ -161,7 +161,7 @@ export default function BookingsManager() {
                     <Button 
                       size="sm" 
                       variant="secondary"
-                      className="text-black border-black hover:bg-[#F5F5F5] text-xs h-8"
+                      className="h-8 w-full border-black text-xs text-black hover:bg-[#F5F5F5] sm:w-auto"
                       onClick={() => updateStatus(booking.reference, 'pending_payment')}
                     >
                       Mark Pending
@@ -170,7 +170,7 @@ export default function BookingsManager() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-4 border-t border-[#E5E5E5]">
+              <div className="grid grid-cols-1 gap-4 border-t border-[#E5E5E5] py-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Customer</p>
                   <p className="font-medium text-black">{booking.customer_name}</p>

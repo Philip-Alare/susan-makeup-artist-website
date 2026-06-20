@@ -7,39 +7,47 @@ interface NavbarProps {
 
 export function Navbar({ onMenuToggle, onLogout }: NavbarProps) {
   return (
-    <header className="fixed top-0 right-0 left-64 h-16 bg-white border-b border-[#E5E5E5] shadow-sm z-30 flex items-center justify-between px-6">
-      <button
-        onClick={onMenuToggle}
-        className="lg:hidden p-2 hover:bg-secondary rounded-lg transition-colors"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
+    <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center justify-between border-b border-[#E5E5E5] bg-white px-4 shadow-sm sm:px-6 lg:left-64">
+      <div className="flex min-w-0 items-center gap-3">
+        <button
+          type="button"
+          onClick={onMenuToggle}
+          className="rounded-lg p-2 transition-colors hover:bg-[#F5F5F5] lg:hidden"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
 
-      <div className="hidden md:block">
-        <h1 className="text-black font-display text-lg">Susan Makeup Dashboard</h1>
+        <div className="min-w-0">
+          <p className="font-display text-sm text-black sm:hidden">Dashboard</p>
+          <h1 className="hidden truncate font-display text-lg text-black md:block">
+            Susan Makeup Dashboard
+          </h1>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <button className="relative p-2 hover:bg-[#F5F5F5] rounded-lg transition-colors">
-          <Bell className="w-5 h-5 text-muted-foreground" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-black rounded-full"></span>
+      <div className="flex items-center gap-2 sm:gap-4">
+        <button className="relative hidden rounded-lg p-2 transition-colors hover:bg-[#F5F5F5] sm:inline-flex">
+          <Bell className="h-5 w-5 text-muted-foreground" />
+          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-black"></span>
         </button>
 
         <button
+          type="button"
           onClick={onLogout}
-          className="p-2 hover:bg-[#F5F5F5] rounded-lg transition-colors text-muted-foreground"
+          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-[#F5F5F5]"
           aria-label="Logout"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="h-5 w-5" />
         </button>
 
-        <div className="flex items-center gap-3 pl-4 border-l border-border">
-          <div className="text-right hidden sm:block">
+        <div className="flex items-center gap-3 border-l border-border pl-3 sm:pl-4">
+          <div className="hidden text-right sm:block">
             <p className="text-sm font-medium text-black">Susan Eworo</p>
             <p className="text-xs text-muted-foreground">Admin</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#FFFFFF]">
-            <User className="w-5 h-5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-[#FFFFFF]">
+            <User className="h-5 w-5" />
           </div>
         </div>
       </div>
