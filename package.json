@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:init:local": "node --env-file=.env.local scripts/init-storage.mjs",
+    "cloudinary:onboard": "node --env-file=.env.local scripts/cloudinary-onboarding.mjs",
+    "cloudinary:migrate": "node --env-file=.env.local scripts/migrate-assets-to-cloudinary.mjs"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@vercel/blob": "^2.0.0",
     "@vercel/postgres": "^0.10.0",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.10.0",
     "lucide-react": "^0.487.0",
     "motion": "^12.23.24",
     "next": "^14.2.9",

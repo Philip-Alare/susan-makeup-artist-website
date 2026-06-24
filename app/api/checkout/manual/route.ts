@@ -1,32 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { put, list } from "@vercel/blob"
 
 import { sql } from "../../../../lib/db"
 import { packages, normalizePackage } from "../../../../data/packages"
 import { rateLimit } from "@/lib/rateLimit"
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "https://susan-makeup-artist-website.vercel.app")
-const BLOB_BUCKET = process.env.BLOB_BUCKET || process.env.NEXT_PUBLIC_BLOB_BUCKET;
-const BLOB_BASE_URL =
-  process.env.BLOB_BASE_URL ||
-  process.env.NEXT_PUBLIC_BLOB_BASE_URL ||
-  (BLOB_BUCKET ? `https://${BLOB_BUCKET}.public.blob.vercel-storage.com` : undefined);
-const BLOB_TOKEN =
-  process.env.BLOB_READ_WRITE_TOKEN ||
-  process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN ||
-  process.env.NEXT_PUBLIC_BLOB_RW_TOKEN ||
-  process.env.BLOB_READ_WRITE_TOKEN
-
-async function getBookingsBlobUrl() {
-  if (BLOB_BASE_URL) return `${BLOB_BASE_URL}/bookings/bookings.json`;
-  if (BLOB_TOKEN) {
-    try {
-      const { blobs } = await list({ prefix: "bookings/bookings.json", limit: 1, token: BLOB_TOKEN });
-      if (blobs.length > 0) return blobs[0].url;
-    } catch { /* ignore */ }
-  }
-  return null;
-}
+import { getContent } from "@/lib/content"
 
 function bookingReference() {
   const now = new Date()
@@ -40,19 +17,7 @@ function bookingReference() {
 async function resolvePackages() {
   const defaults = packages
   try {
-    let url: string | null = null;
-    if (BLOB_BASE_URL) {
-       url = `${BLOB_BASE_URL}/content/packages.json`;
-    } else if (BLOB_TOKEN) {
-       const { blobs } = await list({ prefix: "content/packages.json", limit: 1, token: BLOB_TOKEN });
-       if (blobs.length > 0) url = blobs[0].url;
-    }
-
-    if (!url) return defaults;
-
-    const res = await fetch(url, { cache: "no-store" })
-    if (!res.ok) return defaults
-    const data = await res.json()
+    const data = await getContent("packages")
     if (Array.isArray(data?.packages)) {
       return data.packages.map((p: any, idx: number) => normalizePackage(p, idx, defaults))
     }
@@ -99,81 +64,50 @@ export async function POST(request: NextRequest) {
   const amountMinor = Math.round(amountMajor * 100)
 
   const reference = bookingReference()
-  
-  // Create booking object
-  const booking = {
-    reference,
-    package_id: pkg.id,
-    package_name: pkg.name,
-    currency: pkg.currency,
-    amount_paid: amountMinor,
-    pay_type: payType,
-    appointment_date: appointmentDate,
-    time_window: timeWindow,
-    country,
-    city,
-    customer_name: name,
-    customer_email: email || null,
-    customer_phone: phone,
-    instagram_handle: instagramHandle || null,
-    notes: notes || null,
-    status: "pending_payment", // Distinct status for bank transfer
-    payment_method: "bank_transfer",
-    created_at: new Date().toISOString(),
-  }
 
   try {
     const conn = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL
-    if (conn) {
-      await sql`
-        INSERT INTO bookings (
-          reference,
-          package_id,
-          package_name,
-          currency,
-          amount_paid,
-          pay_type,
-          appointment_date,
-          time_window,
-          country,
-          city,
-          customer_name,
-          customer_email,
-          customer_phone,
-          instagram_handle,
-          notes,
-          status
-        ) VALUES (
-          ${reference},
-          ${pkg.id},
-          ${pkg.name},
-          ${pkg.currency},
-          ${amountMinor},
-          ${payType},
-          ${appointmentDate},
-          ${timeWindow},
-          ${country},
-          ${city},
-          ${name},
-          ${email || null},
-          ${phone},
-          ${instagramHandle || null},
-          ${notes || null},
-          ${"pending_payment"}
-        )
-      `
-    } else if (BLOB_TOKEN) {
-      const bookingsUrl = await getBookingsBlobUrl();
-      const existing = bookingsUrl ? await fetch(bookingsUrl, { cache: "no-store" }).then((r) => (r.ok ? r.json() : [])).catch(() => []) : [];
-      const next = Array.isArray(existing) ? [booking, ...existing] : [booking]
-      
-      await put('bookings/bookings.json', JSON.stringify(next), {
-        access: 'public',
-        addRandomSuffix: false,
-        token: BLOB_TOKEN,
-        allowOverwrite: true,
-      })
+    if (!conn) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 500 })
     }
+
+    await sql`
+      INSERT INTO bookings (
+        reference,
+        package_id,
+        package_name,
+        currency,
+        amount_paid,
+        pay_type,
+        appointment_date,
+        time_window,
+        country,
+        city,
+        customer_name,
+        customer_email,
+        customer_phone,
+        instagram_handle,
+        notes,
+        status
+      ) VALUES (
+        ${reference},
+        ${pkg.id},
+        ${pkg.name},
+        ${pkg.currency},
+        ${amountMinor},
+        ${payType},
+        ${appointmentDate},
+        ${timeWindow},
+        ${country},
+        ${city},
+        ${name},
+        ${email || null},
+        ${phone},
+        ${instagramHandle || null},
+        ${notes || null},
+        ${"pending_payment"}
+      )
+    `
 
     return NextResponse.json({ reference })
   } catch (error) {

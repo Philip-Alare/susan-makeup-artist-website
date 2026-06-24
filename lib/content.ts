@@ -1,39 +1,34 @@
-import { put, list } from "@vercel/blob";
+import { sql } from "@/lib/db";
+import cloudinaryAssetMap from "@/data/cloudinary-asset-map.json";
 
-const BLOB_BUCKET = process.env.BLOB_BUCKET || process.env.NEXT_PUBLIC_BLOB_BUCKET;
-const BLOB_BASE_URL =
-  process.env.BLOB_BASE_URL ||
-  process.env.NEXT_PUBLIC_BLOB_BASE_URL ||
-  (BLOB_BUCKET ? `https://${BLOB_BUCKET}.public.blob.vercel-storage.com` : undefined);
-const BLOB_TOKEN =
-  process.env.BLOB_READ_WRITE_TOKEN ||
-  process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN ||
-  process.env.NEXT_PUBLIC_BLOB_RW_TOKEN ||
-  process.env.BLOB_READ_WRITE_TOKEN;
+const DB_URL = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL;
+let contentTableReady: Promise<void> | null = null;
 
-async function getBlobUrl(section: string) {
-  // If we have an explicit base URL, use it (fastest)
-  if (BLOB_BASE_URL) {
-    return `${BLOB_BASE_URL}/content/${section}.json`;
+function normalizeAssetKey(value: string) {
+  return value.replace(/\\/g, "/");
+}
+
+function clone<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function applyAssetMap<T>(value: T): T {
+  if (typeof value === "string") {
+    const mapped = (cloudinaryAssetMap as Record<string, string>)[normalizeAssetKey(value)];
+    return (mapped || value) as T;
   }
-  
-  // Otherwise, if we have a token, list blobs to find it (auto-discovery)
-  if (BLOB_TOKEN) {
-    try {
-      const { blobs } = await list({
-        prefix: `content/${section}.json`,
-        limit: 1,
-        token: BLOB_TOKEN
-      });
-      if (blobs.length > 0) {
-        return blobs[0].url;
-      }
-    } catch (e) {
-      console.warn("Failed to discover blob URL:", e);
-    }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => applyAssetMap(item)) as T;
   }
-  
-  return null;
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, applyAssetMap(entry)]),
+    ) as T;
+  }
+
+  return value;
 }
 
 export const defaultContent: Record<string, any> = {
@@ -236,32 +231,99 @@ export const defaultContent: Record<string, any> = {
   settings: { admin: {}, profile: {}, general: {} },
 };
 
-export async function getContent(section: string) {
-  try {
-    const url = await getBlobUrl(section);
-    if (url) {
-      // Add timestamp to bypass Vercel Blob edge cache
-      const t = Date.now();
-      const res = await fetch(`${url}?t=${t}`, { cache: "no-store" });
-      if (res.ok) {
-        return await res.json();
-      }
-    }
-  } catch {
-    // ignore
+function getDefaultSection(section: string) {
+  return applyAssetMap(clone(defaultContent[section] || {}));
+}
+
+async function ensureContentTable() {
+  if (!DB_URL) return;
+
+  if (!contentTableReady) {
+    contentTableReady = (async () => {
+      await sql`
+        CREATE TABLE IF NOT EXISTS site_content (
+          section TEXT PRIMARY KEY,
+          data JSONB NOT NULL,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+      `;
+    })().catch((error) => {
+      contentTableReady = null;
+      throw error;
+    });
   }
-  return defaultContent[section] || {};
+
+  await contentTableReady;
+}
+
+export async function seedDefaultContent() {
+  if (!DB_URL) return;
+
+  await ensureContentTable();
+
+  for (const section of Object.keys(defaultContent)) {
+    await sql`
+      INSERT INTO site_content (section, data)
+      VALUES (${section}, ${JSON.stringify(getDefaultSection(section))}::jsonb)
+      ON CONFLICT (section) DO NOTHING
+    `;
+  }
+}
+
+export async function getContent(section: string) {
+  const fallback = getDefaultSection(section);
+
+  if (!DB_URL) {
+    return fallback;
+  }
+
+  await ensureContentTable();
+
+  const result = await sql`
+    SELECT data
+    FROM site_content
+    WHERE section = ${section}
+    LIMIT 1
+  `;
+
+  const stored = result.rows[0]?.data;
+  if (!stored) {
+    await sql`
+      INSERT INTO site_content (section, data)
+      VALUES (${section}, ${JSON.stringify(fallback)}::jsonb)
+      ON CONFLICT (section) DO NOTHING
+    `;
+    return fallback;
+  }
+
+  const mapped = applyAssetMap(stored);
+  if (JSON.stringify(mapped) !== JSON.stringify(stored)) {
+    await sql`
+      INSERT INTO site_content (section, data, updated_at)
+      VALUES (${section}, ${JSON.stringify(mapped)}::jsonb, NOW())
+      ON CONFLICT (section)
+      DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
+    `;
+  }
+
+  return mapped;
 }
 
 export async function saveContent(section: string, data: any) {
-  if (!BLOB_TOKEN) throw new Error("Blob token not configured");
-  
-  await put(`content/${section}.json`, JSON.stringify(data), {
-    access: "public",
-    addRandomSuffix: false,
-    token: BLOB_TOKEN,
-    allowOverwrite: true,
-  });
-  
-  return data;
+  if (!DB_URL) {
+    throw new Error("Database not configured");
+  }
+
+  await ensureContentTable();
+
+  const payload = applyAssetMap(data);
+
+  await sql`
+    INSERT INTO site_content (section, data, updated_at)
+    VALUES (${section}, ${JSON.stringify(payload)}::jsonb, NOW())
+    ON CONFLICT (section)
+    DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
+  `;
+
+  return payload;
 }

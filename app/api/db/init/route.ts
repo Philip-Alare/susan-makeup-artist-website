@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { sql } from "../../../../lib/db"
+import { seedDefaultContent } from "@/lib/content"
 
 export async function GET() {
   const conn = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL
@@ -32,6 +33,14 @@ export async function GET() {
       );
     `
     await sql`CREATE INDEX IF NOT EXISTS idx_bookings_status_created ON bookings(status, created_at);`
+    await sql`
+      CREATE TABLE IF NOT EXISTS site_content (
+        section TEXT PRIMARY KEY,
+        data JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `
+    await seedDefaultContent()
 
     return NextResponse.json({ ok: true })
   } catch (error) {
