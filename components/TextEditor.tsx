@@ -108,7 +108,11 @@ export default function TextEditor({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex items-start gap-3 sm:gap-4">
-          <Button variant="ghost" onClick={() => onNavigate("content")} className="p-2">
+          <Button
+            variant="ghost"
+            onClick={() => onNavigate("content")}
+            className="hidden p-2 sm:inline-flex"
+          >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>

@@ -4,7 +4,7 @@ import { sql } from "../../../../lib/db"
 import { seedDefaultContent } from "@/lib/content"
 
 export async function GET() {
-  const conn = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL
+  const conn = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
   if (!conn) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 })
   }

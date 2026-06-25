@@ -17,10 +17,23 @@ import { getSection, updateSection } from '@/lib/api';
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function DashboardApp() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-  const [editorSection, setEditorSection] = useState<string | undefined>(undefined);
+  const [routeHistory, setRouteHistory] = useState<Array<{ page: string; section?: string }>>([
+    { page: 'dashboard' },
+  ]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
+  const currentRoute = routeHistory[routeHistory.length - 1] || { page: 'dashboard' };
+  const currentPage = currentRoute.page;
+  const editorSection = currentRoute.section;
+
+  const pageTitles: Record<string, string> = {
+    dashboard: 'Dashboard',
+    bookings: 'Bookings',
+    content: 'Content',
+    images: 'Gallery',
+    settings: 'Settings',
+    editor: editorSection ? `Edit ${editorSection}` : 'Editor',
+  };
 
   useEffect(() => {
     if (!isSidebarOpen) return;
@@ -34,8 +47,23 @@ export default function DashboardApp() {
   }, [isSidebarOpen]);
 
   const handleNavigate = (page: string, section?: string) => {
-    setCurrentPage(page);
-    if (section) setEditorSection(section);
+    setRouteHistory((previous) => {
+      const last = previous[previous.length - 1];
+      if (last?.page === page && last?.section === section) {
+        return previous;
+      }
+      return [...previous, { page, section }];
+    });
+    setIsSidebarOpen(false);
+  };
+
+  const handleBack = () => {
+    setRouteHistory((previous) => {
+      if (previous.length <= 1) {
+        return previous;
+      }
+      return previous.slice(0, -1);
+    });
     setIsSidebarOpen(false);
   };
 
@@ -81,7 +109,13 @@ export default function DashboardApp() {
       />
 
       <div className="flex min-h-screen flex-col lg:ml-64">
-        <Navbar onMenuToggle={() => setIsSidebarOpen((open) => !open)} onLogout={handleLogout} />
+        <Navbar
+          title={pageTitles[currentPage] || 'Dashboard'}
+          canGoBack={routeHistory.length > 1}
+          onBack={handleBack}
+          onMenuToggle={() => setIsSidebarOpen((open) => !open)}
+          onLogout={handleLogout}
+        />
 
         <main className="flex-1 overflow-y-auto px-4 pb-6 pt-20 sm:px-6 sm:pb-8 lg:px-8 lg:pb-10 lg:pt-24">
           <div className="mx-auto max-w-7xl animate-in fade-in duration-300">

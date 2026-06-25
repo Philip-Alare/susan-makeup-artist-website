@@ -1,14 +1,28 @@
-import { Bell, Menu, User, LogOut } from "lucide-react";
+import { ArrowLeft, Bell, Menu, User, LogOut } from "lucide-react";
 
 interface NavbarProps {
+  title?: string;
+  canGoBack?: boolean;
+  onBack?: () => void;
   onMenuToggle?: () => void;
   onLogout?: () => void;
 }
 
-export function Navbar({ onMenuToggle, onLogout }: NavbarProps) {
+export function Navbar({ title = "Dashboard", canGoBack = false, onBack, onMenuToggle, onLogout }: NavbarProps) {
   return (
     <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center justify-between border-b border-[#E5E5E5] bg-white px-4 shadow-sm sm:px-6 lg:left-64">
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-1 sm:gap-3">
+        {canGoBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-lg p-2 transition-colors hover:bg-[#F5F5F5] lg:hidden"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+        )}
+
         <button
           type="button"
           onClick={onMenuToggle}
@@ -19,7 +33,7 @@ export function Navbar({ onMenuToggle, onLogout }: NavbarProps) {
         </button>
 
         <div className="min-w-0">
-          <p className="font-display text-sm text-black sm:hidden">Dashboard</p>
+          <p className="truncate font-display text-sm text-black sm:hidden">{title}</p>
           <h1 className="hidden truncate font-display text-lg text-black md:block">
             Susan Makeup Dashboard
           </h1>
