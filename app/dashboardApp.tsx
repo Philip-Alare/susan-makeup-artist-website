@@ -14,7 +14,7 @@ import { Button } from '@/components/Button';
 import { Input, Textarea } from '@/components/Input';
 import bcrypt from 'bcryptjs';
 import { getSection, updateSection } from '@/lib/api';
-import { Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 export default function DashboardApp() {
   const [routeHistory, setRouteHistory] = useState<Array<{ page: string; section?: string }>>([
@@ -23,16 +23,27 @@ export default function DashboardApp() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
   const currentRoute = routeHistory[routeHistory.length - 1] || { page: 'dashboard' };
+  const previousRoute = routeHistory.length > 1 ? routeHistory[routeHistory.length - 2] : null;
   const currentPage = currentRoute.page;
   const editorSection = currentRoute.section;
 
-  const pageTitles: Record<string, string> = {
-    dashboard: 'Dashboard',
-    bookings: 'Bookings',
-    content: 'Content',
-    images: 'Gallery',
-    settings: 'Settings',
-    editor: editorSection ? `Edit ${editorSection}` : 'Editor',
+  const getPageTitle = (route: { page: string; section?: string }) => {
+    switch (route.page) {
+      case 'dashboard':
+        return 'Dashboard';
+      case 'bookings':
+        return 'Bookings';
+      case 'content':
+        return 'Content';
+      case 'images':
+        return 'Gallery';
+      case 'settings':
+        return 'Settings';
+      case 'editor':
+        return route.section ? `Edit ${route.section}` : 'Editor';
+      default:
+        return 'Dashboard';
+    }
   };
 
   useEffect(() => {
@@ -110,7 +121,7 @@ export default function DashboardApp() {
 
       <div className="flex min-h-screen flex-col lg:ml-64">
         <Navbar
-          title={pageTitles[currentPage] || 'Dashboard'}
+          title={getPageTitle(currentRoute)}
           canGoBack={routeHistory.length > 1}
           onBack={handleBack}
           onMenuToggle={() => setIsSidebarOpen((open) => !open)}
@@ -119,6 +130,23 @@ export default function DashboardApp() {
 
         <main className="flex-1 overflow-y-auto px-4 pb-6 pt-20 sm:px-6 sm:pb-8 lg:px-8 lg:pb-10 lg:pt-24">
           <div className="mx-auto max-w-7xl animate-in fade-in duration-300">
+            {routeHistory.length > 1 && previousRoute && (
+              <div className="mb-4 rounded-2xl border border-[#E5E5E5] bg-white p-3 shadow-sm lg:hidden">
+                <Button
+                  variant="ghost"
+                  onClick={handleBack}
+                  className="flex w-full items-center justify-between gap-3 px-1 py-1 text-left text-black hover:bg-transparent"
+                >
+                  <span className="flex items-center gap-2 text-sm font-medium">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to {getPageTitle(previousRoute)}
+                  </span>
+                  <span className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                    {getPageTitle(currentRoute)}
+                  </span>
+                </Button>
+              </div>
+            )}
             {renderContent()}
           </div>
         </main>
